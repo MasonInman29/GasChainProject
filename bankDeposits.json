@@ -1,1 +1,6 @@
 {"amount":10,"transaction":"23","status":"deposited"}
+{"amount":50,"bankId":1,"transaction":"Station Deposit - Amount: 50.0","timestamp":1730686458883,"status":"deposited"}
+{"amount":20,"bankId":1,"transaction":"Station Deposit - Amount: 20.0","timestamp":1730686552430,"status":"deposited"}
+{"amount":100,"bankId":1,"transaction":"Station Deposit - Amount: 100.0","timestamp":1730686606905,"status":"deposited"}
+{"amount":100,"bankId":1,"transaction":"Station Deposit - Amount: 100.0","timestamp":1730686727042,"status":"deposited"}
+{"amount":0,"bankId":1,"transaction":"Station Deposit - Amount: 0.0","timestamp":1730686739514,"status":"deposited"}
