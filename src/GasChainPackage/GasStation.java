@@ -98,8 +98,7 @@ public class GasStation {
 
     public static void orderNewItem(){}
 
-    public static int stockItem(int itemID, int orderAmount){
+    public static void stockItem(int itemID, int orderAmount){
         
-        return 0;
     }
 }
