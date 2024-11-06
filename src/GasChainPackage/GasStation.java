@@ -75,20 +75,20 @@ public class GasStation {
         return null;
     }
 
-    // Method to update the quantity of an item by ID
-    private static void updateItemQuantity(int itemId, int newQuantity) {
-        JSONObject itemInfo =  loadJSONFromFile();
-        JSONArray items = itemInfo.getJSONArray("items");
-    
-        for (int i = 0; i < items.length(); i++) {
-            JSONObject item = items.getJSONObject(i);
-            if (item.getInt("id") == itemId) {
-                    item.put("quantity", newQuantity);
-                    System.out.println("Updated item: " + item);
-                break;
-            }
-        }
-    }
+//    // Method to update the quantity of an item by ID
+//    private static void updateItemQuantity(int itemId, int newQuantity) {
+//        JSONObject itemInfo =  loadJSONFromFile();
+//        JSONArray items = itemInfo.getJSONArray("items");
+//
+//        for (int i = 0; i < items.length(); i++) {
+//            JSONObject item = items.getJSONObject(i);
+//            if (item.getInt("id") == itemId) {
+//                    item.put("quantity", newQuantity);
+//                    System.out.println("Updated item: " + item);
+//                break;
+//            }
+//        }
+//    }
     
     // Method to write JSON data to file
     private static void writeJSONToFile() {
@@ -182,22 +182,22 @@ public class GasStation {
      * @param amount
      * @return
      */
-    public static Map<String, Integer> addToBag(Map<String, Integer> bag, String itemID, int amount) {
+    public static Map<String, Integer> addToBag(Map<String, Integer> items, String itemID, int amount) {
         JSONObject itemInfo =  loadJSONFromFile();
         JSONObject item = itemInfo.getJSONObject(itemID);
-        if(item == null) { return bag; }
+        if(item == null) { return items; }
         int quantity = itemInfo.getInt("quantity");
         int temp = 0;
 
         while(quantity > 0 & temp < amount) {
-            if(bag.containsKey(itemID)) {
+            if(items.containsKey(itemID)) {
                 temp++;
                 quantity--;
-                bag.put(itemID, bag.get(itemID) + 1);
+                items.put(itemID, items.get(itemID) + 1);
             }
         }
-        itemInfo.put("quantity", bag.get(quantity));
-        return bag;
+        itemInfo.put("quantity", items.get(quantity));
+        return items;
     }
 
     /**
@@ -206,16 +206,16 @@ public class GasStation {
      * @param paymentAmount
      * @return
      */
-    public static double sale(Map<String, Integer> bag, int paymentAmount){
+    public static double completeSale(Map<String, Integer> items, int paymentAmount){
         JSONObject itemInfo =  loadJSONFromFile();
         double total = 0;
 
-        for(String id: bag.keySet()){
+        for(String id: items.keySet()){
             JSONObject item = itemInfo.getJSONObject(id);
-            total += ((double)item.get("price")) * bag.get(id);
+            total += ((double)item.get("price")) * items.get(id);
             if(total > paymentAmount) {
-                for(String itemID: bag.keySet()) {
-                    stockItem(itemID, bag.get(itemID));
+                for(String itemID: items.keySet()) {
+                    stockItem(itemID, items.get(itemID));
                 }
                 return -1;
             }
