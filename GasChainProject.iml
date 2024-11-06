@@ -16,6 +16,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
@@ -25,5 +26,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    // <orderEntry type="library" name="JSON 2014-01-07" level="project" /> //main
+
   </component>
 </module>
