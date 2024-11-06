@@ -9,13 +9,16 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.Dictionary;
 
 
 public class GasStation {
     private int stationID;
     private StoreInventory storeInventory;
     private double balance;
-    private final Bank bank;
+    private final int bankID = 1;
+    private Bank bank;
     private static final String FILE_PATH = "../itemInformation.json";
   
     private String location;
@@ -37,6 +40,7 @@ public class GasStation {
         this.servicesOffered = new ArrayList<>();
         this.storeInventory = new StoreInventory();
         this.transactionLog = new ArrayList<>();
+        this.bank = new Bank(bankID, 0);
     }
 
     public void recordTransaction(String type, double amount) {
@@ -171,35 +175,64 @@ public class GasStation {
         return balance;
     }
 
-    //-------------------STORE------------------//
-  
     /**
-     * 
-     * @param itemIDs of each item in the sale by its ID
-     * @return price as a double
+     *
+     * @param bag
+     * @param itemID
+     * @param amount
+     * @return
      */
-    public static double sale(String[] itemIDs){
+    public static Map<String, Integer> addToBag(Map<String, Integer> bag, String itemID, int amount) {
         JSONObject itemInfo =  loadJSONFromFile();
+        JSONObject item = itemInfo.getJSONObject(itemID);
+        if(item == null) { return bag; }
+        int quantity = itemInfo.getInt("quantity");
+        int temp = 0;
 
+        while(quantity > 0 & temp < amount) {
+            if(bag.containsKey(itemID)) {
+                temp++;
+                quantity--;
+                bag.put(itemID, bag.get(itemID) + 1);
+            }
+        }
+        itemInfo.put("quantity", bag.get(quantity));
+        return bag;
+    }
+
+    /**
+     *
+     * @param bag
+     * @param paymentAmount
+     * @return
+     */
+    public static double sale(Map<String, Integer> bag, int paymentAmount){
+        JSONObject itemInfo =  loadJSONFromFile();
         double total = 0;
-        for(String id: itemIDs){
+
+        for(String id: bag.keySet()){
             JSONObject item = itemInfo.getJSONObject(id);
-
-
+            total += ((double)item.get("price")) * bag.get(id);
+            if(total > paymentAmount) {
+                for(String itemID: bag.keySet()) {
+                    stockItem(itemID, bag.get(itemID));
+                }
+                return -1;
+            }
         }
 
-        return 0;
+        return total;
     }
 
-    public static int orderItems(String[] itemIDs){
-
-        stockItem(4, 10);
-        return 0;
-    }
+//    public static int orderItems(String[] itemIDs){
+//        JSONObject itemInfo =  loadJSONFromFile();
+//        stockItem(4, 10);
+//        return 0;
+//    }
 
     public static void orderNewItem(){}
 
-    public static void stockItem(int itemID, int orderAmount){
+    public static void stockItem(String itemID, int orderAmount){
         
     }
 }
