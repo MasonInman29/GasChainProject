@@ -16,10 +16,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-<<<<<<< HEAD
-    <orderEntry type="library" name="json-20140107" level="project" />
-=======
-
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
@@ -29,8 +25,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    // <orderEntry type="library" name="JSON 2014-01-07" level="project" /> //main
-
->>>>>>> a460b9508c3a3b204795c445d3db1fb94e56bd8a
+    <orderEntry type="library" name="JSON 2014-01-07" level="project" />
   </component>
 </module>
