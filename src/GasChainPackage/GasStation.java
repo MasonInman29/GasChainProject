@@ -17,17 +17,8 @@ public class GasStation {
     private int stationID;
     private StoreInventory storeInventory;
     private double balance;
-<<<<<<< HEAD
-    private final Bank bank;
     private StationManager stationManager;
     private FuelSupplier fuelSupplier;
-
-    public GasStation(Bank bank) {
-        this.balance = 0.0;
-        this.bank = bank;
-        this.stationManager = new StationManager();
-        this.fuelSupplier = new FuelSupplier();
-=======
     private final int bankID = 1;
     private Bank bank;
     private static final String FILE_PATH = "../itemInformation.json";
@@ -52,7 +43,8 @@ public class GasStation {
         this.storeInventory = new StoreInventory();
         this.transactionLog = new ArrayList<>();
         this.bank = new Bank(bankID, 0);
->>>>>>> a460b9508c3a3b204795c445d3db1fb94e56bd8a
+        this.stationManager = new StationManager();
+        this.fuelSupplier = new FuelSupplier();
     }
 
     public void recordTransaction(String type, double amount) {
@@ -127,7 +119,7 @@ public class GasStation {
         }
     }
 
-<<<<<<< HEAD
+
     public void performPurchaseProcess() {
         // Inventory check
         if (stationManager.checkFuelLevel("Gasoline") < 1000) {
@@ -143,8 +135,6 @@ public class GasStation {
         }
     }
 
-    public double getBalance() {
-=======
     public boolean depositToBank(double amount) {
         if (amount <= balance) {
             String paymentInfo = "Station Deposit - Amount: " + amount;
@@ -156,9 +146,8 @@ public class GasStation {
         }
         return false;
     }
-
     public double getStoreFunds() {
->>>>>>> a460b9508c3a3b204795c445d3db1fb94e56bd8a
+
         return balance;
     }
 
@@ -208,7 +197,7 @@ public class GasStation {
 
     /**
      *
-     * @param bag
+     * @param items
      * @param itemID
      * @param amount
      * @return
@@ -233,7 +222,7 @@ public class GasStation {
 
     /**
      *
-     * @param bag
+     * @param items
      * @param paymentAmount
      * @return
      */
