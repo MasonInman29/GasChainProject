@@ -11,7 +11,8 @@ public class Customer {
 
     public String providePaymentInfo() {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter payment information for " + name + ": ");
+        System.out.println("Enter payment information for " + name + ": ");
+        System.out.print("Enter how many dollars of gas would you like? ");
         return scanner.nextLine();
     }
 }

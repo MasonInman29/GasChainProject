@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import static java.lang.Integer.parseInt;
+
 public class Main {
     private Bank bank;
     private TransactionHandler transactionHandler;
@@ -73,13 +75,17 @@ public class Main {
      */
     private void purchaseGas() {
         // Customer provides payment information
-        String paymentInfo = customer.providePaymentInfo(); // Ensure this returns the correct payment info
+        String paymentInfo = customer.providePaymentInfo();
 
         // Assuming we have a way to determine the amount of gas purchased
-        double amount = 10.0; // This is just an example, replace with actual logic
-
-        // Attempt to purchase gas
-        boolean success = fuelPump.purchaseGas(paymentInfo, station, amount);
+        double amount = 0;
+        boolean success = false;
+        try {
+            amount = parseInt(paymentInfo);
+            success = fuelPump.purchaseGas(paymentInfo, station, amount);
+        } catch (Exception e) {
+            System.out.println("An Error occurred while obtaining or processing payment.");
+        }
 
         if (success) {
             System.out.println("Thank you for your purchase!");
