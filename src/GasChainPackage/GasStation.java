@@ -7,10 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.Dictionary;
+import java.util.*;
 
 
 public class GasStation {
@@ -21,7 +18,7 @@ public class GasStation {
     private FuelSupplier fuelSupplier;
     private final int bankID = 1;
     private Bank bank;
-    private static final String FILE_PATH = "../itemInformation.json";
+    private static final String FILE_PATH = "itemInformation.json";
   
     private String location;
     private Employee cashier;
@@ -95,15 +92,47 @@ public class GasStation {
 //    }
     
     // Method to write JSON data to file
-    private static void writeJSONToFile() {
-        JSONObject itemInfo =  loadJSONFromFile();
-
+    private static void writeJSONToFile(JSONObject itemInfo) {
+        System.out.println("WRITE: " + itemInfo.toString());
+        if (itemInfo == null) {
+            System.out.println("Error: No data to write to file.");
+            return;
+        }
+        // Write JSON data to file
         try (FileWriter file = new FileWriter(FILE_PATH)) {
+            System.out.println("TRY 2");
             file.write(itemInfo.toString(4)); // Indent with 4 spaces for readability
-            System.out.println("Successfully updated JSON file.");
+            System.out.println("Successfully updated JSON file at " + FILE_PATH);
         } catch (IOException e) {
+            System.out.println("Error: Unable to write to file at " + FILE_PATH);
             e.printStackTrace();
         }
+    }
+
+    public static boolean updateItemInJSON(int itemId, String keyToUpdate, Object newValue) {
+        JSONObject allItems = loadJSONFromFile();
+        if (allItems == null) {
+            System.out.println("Error: Could not load JSON data.");
+            return false;
+        }
+
+        // Access the items JSONObject
+        JSONObject itemsObject = allItems.getJSONObject("items");
+
+        // Find the target item by ID
+        JSONObject targetItem = itemsObject.optJSONObject(String.valueOf(itemId));
+        if (targetItem == null) {
+            System.out.println("Error: Item with ID " + itemId + " not found.");
+            return false;
+        }
+
+        // Update the specified key with the new value
+        targetItem.put(keyToUpdate, newValue);
+        System.out.println("Updated item ID " + itemId + ": Set " + keyToUpdate + " to " + newValue);
+
+        // Save the updated JSON back to the file
+        writeJSONToFile(allItems);
+        return true;
     }
 
     /**
@@ -197,27 +226,89 @@ public class GasStation {
 
     /**
      *
-     * @param items
-     * @param itemID
-     * @param amount
+     * @param itemid
      * @return
      */
-    public static Map<String, Integer> addToBag(Map<String, Integer> items, String itemID, int amount) {
-        JSONObject itemInfo =  loadJSONFromFile();
-        JSONObject item = itemInfo.getJSONObject(itemID);
-        if(item == null) { return items; }
-        int quantity = itemInfo.getInt("quantity");
-        int temp = 0;
+    public static boolean addToBag(int itemid) {
+        Integer itemID = Integer.valueOf(itemid);
+        JSONObject allItems = loadJSONFromFile(); //assume JSON is loaded correctly
+        // Get the item
+        JSONObject item = allItems.getJSONObject("items").getJSONObject(String.valueOf(itemID));
 
-        while(quantity > 0 & temp < amount) {
-            if(items.containsKey(itemID)) {
-                temp++;
-                quantity--;
-                items.put(itemID, items.get(itemID) + 1);
+        // Get the quantity and check if the item is in stock
+        int quantity = item.getInt("quantity");
+        if (quantity <= 0) {
+            System.out.println("Error: Item is out of stock.");
+            return false;
+        }
+
+        // Update the quantity in the JSON object
+        updateItemInJSON(item.getInt("id"), "quantity",  quantity - 1);
+        System.out.println("Item " + item.getString("name") + " added to bag.");
+        return true;
+    }
+
+    /**
+     *
+     */
+    public static void printStock() {
+        JSONObject itemInfo = loadJSONFromFile(); // Assume this method loads the JSON data correctly
+        JSONObject itemsObject = itemInfo.getJSONObject("items");
+
+        for (Object keyStr : itemsObject.keySet()){
+            // Convert key to an integer
+            int key = Integer.valueOf(String.valueOf(keyStr));
+
+            JSONObject item = itemsObject.getJSONObject(String.valueOf(keyStr));
+            int id = item.getInt("id");
+            String name = item.getString("name");
+            int quantity = item.getInt("quantity");
+
+            // Print the item details
+            System.out.println("ID: " + id + ", Name: " + name + ", Quantity: " + quantity);
+        }
+    }
+
+    public static double getSalesTotal(Map<Integer, Integer> items) {
+        JSONObject itemInfo = loadJSONFromFile(); // Load the JSON data
+        JSONObject itemsArray = itemInfo.getJSONObject("items");
+        double total = 0;
+
+        // Iterate through the items in the provided map
+        for (Map.Entry<Integer, Integer> entry : items.entrySet()) {
+            Integer id = entry.getKey(); // Get item ID from map
+            Integer quantity = entry.getValue(); // Get the quantity from the map
+
+            JSONObject item = itemsArray.getJSONObject(String.valueOf(id)); // Get the item from JSON by ID
+
+            // Check if the item exists in the JSON file
+            if (item != null) {
+                double price = item.getDouble("price"); // Get price of the item
+                total += price * quantity; // Add price * quantity to total
+            } else {
+                System.out.println("Error: Item with ID " + id + " not found.");
             }
         }
-        itemInfo.put("quantity", items.get(quantity));
-        return items;
+
+        return total;
+    }
+
+    public static void printBag(Map<Integer, Integer> myBag) {
+        JSONObject itemInfo = loadJSONFromFile(); // Assume this method loads the JSON data correctly
+        JSONObject itemsObject = itemInfo.getJSONObject("items");
+
+        for (Object keyStr : myBag.keySet()){
+            // Convert key to an integer
+            int key = Integer.valueOf(String.valueOf(keyStr));
+
+            JSONObject item = itemsObject.getJSONObject(String.valueOf(keyStr));
+            int id = item.getInt("id");
+            String name = item.getString("name");
+            int quantity = item.getInt("quantity");
+
+            // Print the item details
+            System.out.println("ID: " + id + ", Name: " + name + ", Quantity: " + quantity);
+        }
     }
 
     /**
@@ -226,33 +317,27 @@ public class GasStation {
      * @param paymentAmount
      * @return
      */
-    public static double completeSale(Map<String, Integer> items, int paymentAmount){
-        JSONObject itemInfo =  loadJSONFromFile();
-        double total = 0;
+    public static boolean completeSale(Map<Integer, Integer> items, double paymentAmount) {
+        double total = getSalesTotal(items); // Get the total cost from the map of items
 
-        for(String id: items.keySet()){
-            JSONObject item = itemInfo.getJSONObject(id);
-            total += ((double)item.get("price")) * items.get(id);
-            if(total > paymentAmount) {
-                for(String itemID: items.keySet()) {
-                    stockItem(itemID, items.get(itemID));
-                }
-                return -1;
+        if (total > paymentAmount) { // Check if payment is insufficient
+            System.out.println("Error: Insufficient payment. Total: " + total + ", Paid: " + paymentAmount);
+            for (Map.Entry<Integer, Integer> entry : items.entrySet()) {
+                stockItem(String.valueOf( entry.getKey()),  entry.getValue());
             }
+            return false;
         }
 
-        return total;
+        System.out.println("Sale completed successfully. Total: " + total + ", Paid: " + paymentAmount);
+        System.out.print("Sales Items: " );
+        printBag(items);
+        System.out.println("/nChange Back: $" + (paymentAmount - total));
+        return true;
     }
-
-//    public static int orderItems(String[] itemIDs){
-//        JSONObject itemInfo =  loadJSONFromFile();
-//        stockItem(4, 10);
-//        return 0;
-//    }
 
     public static void orderNewItem(){}
 
-    public static void stockItem(String itemID, int orderAmount){
-        
+    public static boolean stockItem(String itemID, int orderAmount){
+        return true;
     }
 }

@@ -2,11 +2,9 @@ package GasChainPackage;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
+import static GasChainPackage.GasStation.*;
 import static java.lang.Integer.parseInt;
 
 public class Main {
@@ -58,6 +56,9 @@ public class Main {
                         manageMoney();
                         break;
                     case 4:
+                        purchaseItems();
+                        break;
+                    case 5:
                         running = false;
                         break;
                     default:
@@ -189,6 +190,84 @@ public class Main {
         }
     }
 
+    private void purchaseItems() {
+        System.out.println("Welcome inside the Gas Station!");
+        boolean running = true;
+        Map<Integer, Integer> myBag = new HashMap<>();
+
+        while (running) {
+            System.out.println("\nWhat would you like to purchase? Enter item ID or 0 to stop.");
+
+            // Display the available stock
+            printStock();
+
+            try {
+                int userChoice = scan.nextInt();
+                scan.nextLine();
+
+                switch (userChoice) {
+                    case 0:
+                        running = false;
+                        break;
+                    case 1:
+                        System.out.println("YAAAAY");
+                    default:
+                        System.out.println("INPUT!!!");
+                        boolean validInput =  addToBag(userChoice);
+                        System.out.print("is valid input: " + validInput);
+                        if (validInput) {
+                            System.out.println("Item successfully added to the bag.");
+                            // Check if the item is already in the bag and update its quantity
+                            myBag.put(userChoice, myBag.getOrDefault(userChoice, 0) + 1);
+                        } else {
+                            System.out.println("Unable to add item. It might be out of stock.");
+                        }
+                        break;
+                }
+            } catch (Exception e) {
+                System.out.println("Error: Invalid Input. Please enter a number.");
+                scan.nextLine();
+            }
+        }
+        System.out.println("Would you like to checkout or exit? c/e");
+        char userChoice ;
+        try {
+            userChoice = scan.nextLine().charAt(0);
+            if(userChoice == 'e' || userChoice == 'E') {
+                return;
+            } else if (userChoice == 'c' || userChoice == 'C'){
+                System.out.println("How much are you paying? Sale Total ");
+                System.out.println( getSalesTotal(myBag));
+                double payment = scan.nextDouble();
+                scan.nextLine(); // Clear the newline after nextDouble()
+                System.out.println("Payment ammount: " + payment);
+                completeSale(myBag, payment);
+            }
+        } catch (Exception e) {
+            System.out.println("Error: Invalid Input. Please enter c or e.");
+        }
+        System.out.println("\nThank you for comming into the Gas Station!");
+    }
+
+
+//        // Customer provides payment information
+//        String paymentInfo = customer.providePaymentInfo();
+//
+//        // Assuming we have a way to determine the amount of gas purchased
+//        double amount = 0;
+//        boolean success = false;
+//        try {
+//            amount = parseInt(paymentInfo);
+//            success = fuelPump.purchaseGas(paymentInfo, station, amount);
+//        } catch (Exception e) {
+//            System.out.println("An Error occurred while obtaining or processing payment.");
+//        }
+//
+//        if (success) {
+//            System.out.println("Thank you for your purchase!");
+//        } else {
+//            System.out.println("Transaction failed. Please try again.")
+
 
     /**
      * Helper Functions
@@ -197,6 +276,7 @@ public class Main {
         System.out.println("1. Purchase Gas");
         System.out.println("2. Stock Inventory");
         System.out.println("3. Manage Money");
-        System.out.println("4. Exit");
+        System.out.println("4. Purchase Items");
+        System.out.println("5. Exit");
     }
 }
