@@ -209,12 +209,8 @@ public class Main {
                     case 0:
                         running = false;
                         break;
-                    case 1:
-                        System.out.println("YAAAAY");
                     default:
-                        System.out.println("INPUT!!!");
                         boolean validInput =  addToBag(userChoice);
-                        System.out.print("is valid input: " + validInput);
                         if (validInput) {
                             System.out.println("Item successfully added to the bag.");
                             // Check if the item is already in the bag and update its quantity

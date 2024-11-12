@@ -1,13 +1,13 @@
 {"items": {
     "11": {
-        "quantity": 2,
+        "quantity": 18,
         "price": 2.25,
         "name": "Hot Dog",
         "maxCapacity": 18,
         "id": 11
     },
     "12": {
-        "quantity": 24,
+        "quantity": 23,
         "price": 1.75,
         "name": "Muffin",
         "maxCapacity": 25,
@@ -133,7 +133,7 @@
         "id": 20
     },
     "10": {
-        "quantity": 44,
+        "quantity": 45,
         "price": 2,
         "name": "Coffee",
         "maxCapacity": 45,

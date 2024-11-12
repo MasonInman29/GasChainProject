@@ -76,33 +76,16 @@ public class GasStation {
         return null;
     }
 
-//    // Method to update the quantity of an item by ID
-//    private static void updateItemQuantity(int itemId, int newQuantity) {
-//        JSONObject itemInfo =  loadJSONFromFile();
-//        JSONArray items = itemInfo.getJSONArray("items");
-//
-//        for (int i = 0; i < items.length(); i++) {
-//            JSONObject item = items.getJSONObject(i);
-//            if (item.getInt("id") == itemId) {
-//                    item.put("quantity", newQuantity);
-//                    System.out.println("Updated item: " + item);
-//                break;
-//            }
-//        }
-//    }
     
     // Method to write JSON data to file
     private static void writeJSONToFile(JSONObject itemInfo) {
-        System.out.println("WRITE: " + itemInfo.toString());
         if (itemInfo == null) {
             System.out.println("Error: No data to write to file.");
             return;
         }
         // Write JSON data to file
         try (FileWriter file = new FileWriter(FILE_PATH)) {
-            System.out.println("TRY 2");
             file.write(itemInfo.toString(4)); // Indent with 4 spaces for readability
-            System.out.println("Successfully updated JSON file at " + FILE_PATH);
         } catch (IOException e) {
             System.out.println("Error: Unable to write to file at " + FILE_PATH);
             e.printStackTrace();
@@ -128,7 +111,7 @@ public class GasStation {
 
         // Update the specified key with the new value
         targetItem.put(keyToUpdate, newValue);
-        System.out.println("Updated item ID " + itemId + ": Set " + keyToUpdate + " to " + newValue);
+//        System.out.println("Updated item ID " + itemId + ": Set " + keyToUpdate + " to " + newValue);
 
         // Save the updated JSON back to the file
         writeJSONToFile(allItems);
@@ -329,14 +312,20 @@ public class GasStation {
         }
 
         System.out.println("Sale completed successfully. Total: " + total + ", Paid: " + paymentAmount);
-        System.out.print("Sales Items: " );
+        System.out.println("Sales Items: " );
         printBag(items);
-        System.out.println("/nChange Back: $" + (paymentAmount - total));
+        System.out.println("\nChange Back: $" + (paymentAmount - total));
         return true;
     }
 
     public static void orderNewItem(){}
 
+    /**
+     * NOT YET IMPLEMENTED
+     * @param itemID
+     * @param orderAmount
+     * @return
+     */
     public static boolean stockItem(String itemID, int orderAmount){
         return true;
     }
