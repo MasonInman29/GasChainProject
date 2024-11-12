@@ -232,7 +232,7 @@ public class Main {
             if(userChoice == 'e' || userChoice == 'E') {
                 return;
             } else if (userChoice == 'c' || userChoice == 'C'){
-                System.out.println("How much are you paying? Sale Total ");
+                System.out.print("How much are you paying? Sale Total ");
                 System.out.println( getSalesTotal(myBag));
                 double payment = scan.nextDouble();
                 scan.nextLine(); // Clear the newline after nextDouble()
