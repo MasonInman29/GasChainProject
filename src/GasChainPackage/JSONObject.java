@@ -1,6 +1,5 @@
 package GasChainPackage;
 
-//import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.StringWriter;

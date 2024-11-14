@@ -1,8 +1,6 @@
 package GasChainPackage;
 
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -86,7 +84,7 @@ public class GasStation {
         // Write JSON data to file
         try (FileWriter file = new FileWriter(FILE_PATH)) {
             file.write(itemInfo.toString(4)); // Indent with 4 spaces for readability
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("Error: Unable to write to file at " + FILE_PATH);
             e.printStackTrace();
         }
