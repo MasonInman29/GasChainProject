@@ -51,4 +51,9 @@ public class Employee {
 
         return true;
     }
+
+    void prepareForDelivery() {
+        System.out.println(name + " is preparing for fuel delivery...");
+        System.out.println("Checking storage tanks and ensuring they are ready for new fuel.");
+    }
 }
