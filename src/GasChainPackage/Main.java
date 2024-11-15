@@ -15,11 +15,17 @@ public class Main {
     private Customer customer;
     private Scanner scan;
 
+    private StationManager stationManager;
+
+    private FuelSupplier fuelSupplier;
+
     public Main() {
         bank = new Bank(1, 0.0);
         transactionHandler = new TransactionHandler();
         employee = new Employee(1, "Jane Smith", "Manager");
         station = new GasStation(1, "456 Station St", employee);
+        stationManager = new StationManager();
+        fuelSupplier = new FuelSupplier();
         employee.setStation(station);
         station.setBank(bank);
         fuelPump = new FuelPump(transactionHandler, bank, true);
@@ -58,6 +64,15 @@ public class Main {
                         purchaseItems();
                         break;
                     case 5:
+                        running = false;
+                        break;
+                    case 6:
+                        performOrderAssessment();
+                        break;
+                    case 7:
+                        performPurchaseProcess();
+                        break;
+                    case 8:
                         running = false;
                         break;
                     default:
@@ -263,15 +278,67 @@ public class Main {
 //        } else {
 //            System.out.println("Transaction failed. Please try again.")
 
-
     /**
-     * Helper Functions
+     * New Use Cases
      */
+    private void performInventoryCheck() {
+        System.out.println("\n=== Inventory Check ===");
+        double gasolineLevel = stationManager.checkFuelLevel("Gasoline");
+        System.out.println("Gasoline level: " + gasolineLevel + " gallons");
+
+        if (gasolineLevel < 500) {
+            System.out.println("Fuel level is low. Consider ordering more fuel.");
+        } else {
+            System.out.println("Fuel level is sufficient.");
+        }
+    }
+
+    private void performOrderAssessment() {
+        System.out.println("\n=== Order Assessment ===");
+        double gasolineLevel = stationManager.checkFuelLevel("Gasoline");
+
+        if (gasolineLevel < 500) {
+            System.out.println("Fuel level is low. Placing an order for 1000 gallons of gasoline.");
+            boolean orderPlaced = stationManager.placeOrder("Gasoline", 1000);
+
+            if (orderPlaced) {
+                System.out.println("Order successfully placed.");
+            } else {
+                System.out.println("Failed to place order. Try again later.");
+            }
+        } else {
+            System.out.println("Fuel level is sufficient. No order needed.");
+        }
+    }
+
+    private void performPurchaseProcess() {
+        System.out.println("\n=== Purchase Process ===");
+        performInventoryCheck();
+        performOrderAssessment();
+
+        System.out.println("Preparing to receive delivery...");
+        employee.prepareForDelivery();
+
+        System.out.println("Receiving delivery...");
+        boolean deliverySuccess = stationManager.receiveFuelDelivery("Gasoline", 1000);
+
+        if (deliverySuccess) {
+            System.out.println("Delivery successfully received and verified.");
+            station.recordTransaction("Fuel delivery", 1000);
+        } else {
+            System.out.println("Delivery verification failed.");
+        }
+    }
+
     private void printMenu() {
         System.out.println("1. Purchase Gas");
         System.out.println("2. Stock Inventory");
         System.out.println("3. Manage Money");
         System.out.println("4. Purchase Items");
-        System.out.println("5. Exit");
+        System.out.println("5. Inventory Check");
+        System.out.println("6. Order Assessment");
+        System.out.println("7. Perform Purchase Process");
+        System.out.println("8. Exit");
     }
 }
+
