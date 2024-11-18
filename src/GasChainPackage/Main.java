@@ -58,6 +58,12 @@ public class Main {
                         purchaseItems();
                         break;
                     case 5:
+                        findItem();
+                        break;
+                    case 6:
+                        removeItem();
+                        break;
+                    case 7:
                         running = false;
                         break;
                     default:
@@ -244,6 +250,126 @@ public class Main {
         System.out.println("\nThank you for comming into the Gas Station!");
     }
 
+    private void findItem() {
+        System.out.println("\n=== Find Item ===");
+
+        // Get the current inventory from the station
+        Map<String, Integer> currentInventory = station.getAllInventory();
+
+        if (currentInventory.isEmpty()) {
+            System.out.println("Inventory is empty.");
+            return;
+        }
+
+        // Get search input from employee
+        System.out.println("Enter search term (item name):");
+        String searchTerm = scan.nextLine().trim().toLowerCase();
+
+        // Track if we found any matches
+        boolean foundMatch = false;
+        System.out.println("\nSearch Results:");
+
+        // Search through inventory
+        for (Map.Entry<String, Integer> entry : currentInventory.entrySet()) {
+            String itemName = entry.getKey().toLowerCase();
+            if (itemName.contains(searchTerm)) {
+                System.out.println("Item: " + entry.getKey());
+                System.out.println("Quantity in Stock: " + entry.getValue());
+                if (entry.getValue() <= station.getStoreInventory().getReorderThreshold()) {
+                    System.out.println("WARNING: Stock is low!");
+                }
+                System.out.println("------------------------");
+                foundMatch = true;
+            }
+        }
+
+        if (!foundMatch) {
+            System.out.println("No items found matching '" + searchTerm + "'");
+            System.out.println("\nAvailable items:");
+            for (String item : currentInventory.keySet()) {
+                System.out.println("- " + item);
+            }
+        }
+    }
+
+    private void removeItem() {
+        System.out.println("\n=== Remove Item ===");
+
+        // Get the current inventory from the station
+        Map<String, Integer> currentInventory = station.getAllInventory();
+
+        if (currentInventory.isEmpty()) {
+            System.out.println("Inventory is empty.");
+            return;
+        }
+
+        // Display current inventory
+        System.out.println("\nCurrent Inventory:");
+        for (Map.Entry<String, Integer> entry : currentInventory.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue() + " units");
+        }
+
+        // Get item to remove
+        System.out.println("\nEnter item name to remove:");
+        String itemToRemove = scan.nextLine().trim();
+
+        if (!currentInventory.containsKey(itemToRemove)) {
+            System.out.println("Error: Item '" + itemToRemove + "' not found in inventory");
+            return;
+        }
+
+        // Get quantity to remove
+        System.out.println("Current quantity of " + itemToRemove + ": " +
+                currentInventory.get(itemToRemove));
+        System.out.println("Enter quantity to remove:");
+
+        try {
+            int quantityToRemove = scan.nextInt();
+            scan.nextLine();
+
+            if (quantityToRemove <= 0) {
+                System.out.println("Error: Quantity must be greater than 0");
+                return;
+            }
+
+            if (quantityToRemove > currentInventory.get(itemToRemove)) {
+                System.out.println("Error: Cannot remove more items than available in inventory");
+                return;
+            }
+
+            // Prepare lists for inventory update
+            List<String> items = new ArrayList<>();
+            List<Integer> quantities = new ArrayList<>();
+            items.add(itemToRemove);
+            quantities.add(-quantityToRemove); // Negative quantity for removal
+
+            boolean updateSuccess = station.updateInventoryLevels(items, quantities);
+
+            if (updateSuccess) {
+                System.out.println("Successfully removed " + quantityToRemove + " units of " +
+                        itemToRemove);
+                System.out.println("Updated quantity: " +
+                        station.getAllInventory().getOrDefault(itemToRemove, 0));
+            } else {
+                System.out.println("Error: Failed to update inventory");
+                System.out.println("Would you like to retry? (Y/N)");
+                String retry = scan.nextLine();
+                if (retry.equalsIgnoreCase("Y")) {
+                    removeItem();
+                }
+            }
+
+        } catch (InputMismatchException e) {
+            // Extension 4a: Handle invalid input
+            System.out.println("Error: Please enter a valid number");
+            scan.nextLine();
+        } catch (Exception e) {
+            // Extension 5a: Handle other system errors
+            System.out.println("System error occurred: " + e.getMessage());
+            System.out.println("Please try again later");
+        }
+    }
+
 
 //        // Customer provides payment information
 //        String paymentInfo = customer.providePaymentInfo();
@@ -272,6 +398,8 @@ public class Main {
         System.out.println("2. Stock Inventory");
         System.out.println("3. Manage Money");
         System.out.println("4. Purchase Items");
-        System.out.println("5. Exit");
+        System.out.println("5. Find Item");
+        System.out.println("6. Remove Item");
+        System.out.println("7. Exit");
     }
 }

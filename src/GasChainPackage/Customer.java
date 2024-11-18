@@ -9,6 +9,10 @@ public class Customer {
         this.name = name;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public String providePaymentInfo() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter payment information for " + name + ": ");

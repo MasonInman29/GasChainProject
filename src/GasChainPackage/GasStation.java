@@ -17,13 +17,13 @@ public class GasStation {
     private final int bankID = 1;
     private Bank bank;
     private static final String FILE_PATH = "itemInformation.json";
-  
+
     private String location;
     private Employee cashier;
     private List<String> fuelTypesOffered;
     private List<String> convenienceItems;
     private List<String> servicesOffered;
-    
+
     private List<JSONObject> transactionLog;
 
 
@@ -74,7 +74,7 @@ public class GasStation {
         return null;
     }
 
-    
+
     // Method to write JSON data to file
     private static void writeJSONToFile(JSONObject itemInfo) {
         if (itemInfo == null) {
@@ -159,6 +159,10 @@ public class GasStation {
     public double getStoreFunds() {
 
         return balance;
+    }
+
+    public StoreInventory getStoreInventory() {
+        return this.storeInventory;
     }
 
     public Map<String, Integer> getAllInventory() {
@@ -327,4 +331,5 @@ public class GasStation {
     public static boolean stockItem(String itemID, int orderAmount){
         return true;
     }
+
 }
