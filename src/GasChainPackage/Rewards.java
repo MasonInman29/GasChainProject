@@ -25,12 +25,26 @@ public class Rewards {
     public int getRewards(){
         return points;
     }
+
+//    /**
+//     * to be implemented later
+//     */
+//    public boolean useRewards(int pts){
+//        if(pts > points){return false;}
+//        points -= pts;
+//        return true;
+//    }
+
     /**
-     * to be implemented later
+     * next iteration - Lindsey
+     * @param salesTotal
+     * @param rewardsToUse
+     * @param points
+     * @return
      */
-    public boolean useRewards(int use){
-        if(use > points){return false;}
+    public int useRewards(double salesTotal, int rewardsToUse, int pts){
+        if(use > points){return 0;}
         points -= use;
-        return true;
+        return pts;
     }
 }

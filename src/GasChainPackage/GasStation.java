@@ -333,18 +333,6 @@ public class GasStation {
         return true;
     }
 
-
-    /**
-     * next iteration - Lindsey
-     * @param salesTotal
-     * @param rewardsToUse
-     * @param points
-     * @return
-     */
-    public int useRewards(double salesTotal, int rewardsToUse, int points){
-        return (0);
-    }
-
     public static void orderNewItem(){}
 
     /**
