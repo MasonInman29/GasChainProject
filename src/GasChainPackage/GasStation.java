@@ -69,14 +69,16 @@ public class GasStation {
     private static JSONObject loadJSONFromFile() {
         try {
             String content = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
-            return( new JSONObject(content));
+            System.out.println(content);
+            JSONObject json = new JSONObject((Files.readAllLines(Paths.get(FILE_PATH))).toString());
+            System.out.println(json.toString());
+            return( json );
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    
     // Method to write JSON data to file
     private static void writeJSONToFile(JSONObject itemInfo) {
         if (itemInfo == null) {
@@ -158,6 +160,7 @@ public class GasStation {
         }
         return false;
     }
+
     public double getStoreFunds() {
 
         return balance;
@@ -235,10 +238,14 @@ public class GasStation {
      *
      */
     public static void printStock() {
-        JSONObject itemInfo = loadJSONFromFile(); // Assume this method loads the JSON data correctly
+        JSONObject itemInfo = loadJSONFromFile();
+        System.out.println("JSON OBJ: ");
+        System.out.println(itemInfo.toString());
         JSONObject itemsObject = itemInfo.getJSONObject("items");
+        System.out.println("JSON OBJ of ITEMS: ");
 
         for (Object keyStr : itemsObject.keySet()){
+            System.out.println(keyStr);
             // Convert key to an integer
             int key = Integer.valueOf(String.valueOf(keyStr));
 
@@ -295,12 +302,13 @@ public class GasStation {
     }
 
     /**
-     *
+     * USE CASE: Employee sell Items
      * @param items
      * @param paymentAmount
      * @return
      */
-    public static boolean completeSale(Map<Integer, Integer> items, double paymentAmount) {
+    public boolean completeSale(Map<Integer, Integer> items, double paymentAmount, Rewards r, int rewardsAmount) {
+
         double total = getSalesTotal(items); // Get the total cost from the map of items
 
         if (total > paymentAmount) { // Check if payment is insufficient
@@ -314,9 +322,23 @@ public class GasStation {
         System.out.println("Sale completed successfully. Total: " + total + ", Paid: " + paymentAmount);
         System.out.println("Sales Items: " );
         printBag(items);
+        depositToBank(total);
+        r.addPoints(total);
         System.out.println("\nChange Back: $" + (paymentAmount - total));
         return true;
     }
+
+    /**
+     * next iteration - Lindsey
+     * @param salesTotal
+     * @param rewardsToUse
+     * @param points
+     * @return
+     */
+    public int useRewards(double salesTotal, int rewardsToUse, int points){
+        return (0);
+    }
+
 
     public static void orderNewItem(){}
 
