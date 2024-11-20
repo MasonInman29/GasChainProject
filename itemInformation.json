@@ -1,142 +1,144 @@
-{"items": {
-    "11": {
-        "quantity": 18,
-        "price": 2.25,
-        "name": "Hot Dog",
-        "maxCapacity": 18,
-        "id": 11
-    },
-    "12": {
-        "quantity": 23,
-        "price": 1.75,
-        "name": "Muffin",
-        "maxCapacity": 25,
-        "id": 12
-    },
-    "13": {
-        "quantity": 100,
-        "price": 0.5,
-        "name": "Mints",
-        "maxCapacity": 100,
-        "id": 13
-    },
-    "14": {
-        "quantity": 20,
-        "price": 5,
-        "name": "Motor Oil",
-        "maxCapacity": 20,
-        "id": 14
-    },
-    "15": {
-        "quantity": 15,
-        "price": 3.75,
-        "name": "Windshield Washer Fluid",
-        "maxCapacity": 15,
-        "id": 15
-    },
-    "16": {
-        "quantity": 50,
-        "price": 2,
-        "name": "Car Air Freshener",
-        "maxCapacity": 50,
-        "id": 16
-    },
-    "17": {
-        "quantity": 10,
-        "price": 15,
-        "name": "Tire Inflator",
-        "maxCapacity": 10,
-        "id": 17
-    },
-    "18": {
-        "quantity": 25,
-        "price": 10,
-        "name": "US Road Map",
-        "maxCapacity": 25,
-        "id": 18
-    },
-    "19": {
-        "quantity": 30,
-        "price": 1.5,
-        "name": "Lighter",
-        "maxCapacity": 30,
-        "id": 19
-    },
-    "1": {
-        "quantity": 47,
-        "price": 1.5,
-        "name": "Bottled Water",
-        "maxCapacity": 50,
-        "id": 1
-    },
-    "2": {
-        "quantity": 39,
-        "price": 1.75,
-        "name": "Soda",
-        "maxCapacity": 40,
-        "id": 2
-    },
-    "3": {
-        "quantity": 30,
-        "price": 2.5,
-        "name": "Energy Drink",
-        "maxCapacity": 30,
-        "id": 3
-    },
-    "4": {
-        "quantity": 32,
-        "price": 1.25,
-        "name": "Chips",
-        "maxCapacity": 35,
-        "id": 4
-    },
-    "5": {
-        "quantity": 60,
-        "price": 1,
-        "name": "Candy Bar",
-        "maxCapacity": 60,
-        "id": 5
-    },
-    "6": {
-        "quantity": 70,
-        "price": 0.75,
-        "name": "Chewing Gum",
-        "maxCapacity": 70,
-        "id": 6
-    },
-    "7": {
-        "quantity": 25,
-        "price": 3.5,
-        "name": "Beef Jerky",
-        "maxCapacity": 25,
-        "id": 7
-    },
-    "8": {
-        "quantity": 15,
-        "price": 4,
-        "name": "Sandwich",
-        "maxCapacity": 15,
-        "id": 8
-    },
-    "9": {
-        "quantity": 20,
-        "price": 1.25,
-        "name": "Donut",
-        "maxCapacity": 20,
-        "id": 9
-    },
-    "20": {
-        "quantity": 40,
-        "price": 4,
-        "name": "Batteries",
-        "maxCapacity": 40,
-        "id": 20
-    },
-    "10": {
-        "quantity": 45,
-        "price": 2,
-        "name": "Coffee",
-        "maxCapacity": 45,
-        "id": 10
+{
+    "items": {
+        "11": {
+            "quantity": 18,
+            "price": 2.25,
+            "name": "Hot Dog",
+            "maxCapacity": 18,
+            "id": 11
+        },
+        "12": {
+            "quantity": 23,
+            "price": 1.75,
+            "name": "Muffin",
+            "maxCapacity": 25,
+            "id": 12
+        },
+        "13": {
+            "quantity": 100,
+            "price": 0.5,
+            "name": "Mints",
+            "maxCapacity": 100,
+            "id": 13
+        },
+        "14": {
+            "quantity": 20,
+            "price": 5,
+            "name": "Motor Oil",
+            "maxCapacity": 20,
+            "id": 14
+        },
+        "15": {
+            "quantity": 15,
+            "price": 3.75,
+            "name": "Windshield Washer Fluid",
+            "maxCapacity": 15,
+            "id": 15
+        },
+        "16": {
+            "quantity": 50,
+            "price": 2,
+            "name": "Car Air Freshener",
+            "maxCapacity": 50,
+            "id": 16
+        },
+        "17": {
+            "quantity": 10,
+            "price": 15,
+            "name": "Tire Inflator",
+            "maxCapacity": 10,
+            "id": 17
+        },
+        "18": {
+            "quantity": 25,
+            "price": 10,
+            "name": "US Road Map",
+            "maxCapacity": 25,
+            "id": 18
+        },
+        "19": {
+            "quantity": 30,
+            "price": 1.5,
+            "name": "Lighter",
+            "maxCapacity": 30,
+            "id": 19
+        },
+        "1": {
+            "quantity": 47,
+            "price": 1.5,
+            "name": "Bottled Water",
+            "maxCapacity": 50,
+            "id": 1
+        },
+        "2": {
+            "quantity": 39,
+            "price": 1.75,
+            "name": "Soda",
+            "maxCapacity": 40,
+            "id": 2
+        },
+        "3": {
+            "quantity": 30,
+            "price": 2.5,
+            "name": "Energy Drink",
+            "maxCapacity": 30,
+            "id": 3
+        },
+        "4": {
+            "quantity": 32,
+            "price": 1.25,
+            "name": "Chips",
+            "maxCapacity": 35,
+            "id": 4
+        },
+        "5": {
+            "quantity": 60,
+            "price": 1,
+            "name": "Candy Bar",
+            "maxCapacity": 60,
+            "id": 5
+        },
+        "6": {
+            "quantity": 70,
+            "price": 0.75,
+            "name": "Chewing Gum",
+            "maxCapacity": 70,
+            "id": 6
+        },
+        "7": {
+            "quantity": 25,
+            "price": 3.5,
+            "name": "Beef Jerky",
+            "maxCapacity": 25,
+            "id": 7
+        },
+        "8": {
+            "quantity": 15,
+            "price": 4,
+            "name": "Sandwich",
+            "maxCapacity": 15,
+            "id": 8
+        },
+        "9": {
+            "quantity": 20,
+            "price": 1.25,
+            "name": "Donut",
+            "maxCapacity": 20,
+            "id": 9
+        },
+        "20": {
+            "quantity": 40,
+            "price": 4,
+            "name": "Batteries",
+            "maxCapacity": 40,
+            "id": 20
+        },
+        "10": {
+            "quantity": 45,
+            "price": 2,
+            "name": "Coffee",
+            "maxCapacity": 45,
+            "id": 10
+        }
     }
-}}
+}

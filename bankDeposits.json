@@ -1,13 +1,5 @@
 {"amount":10,"transaction":"23","status":"deposited"}
-<<<<<<< HEAD
 {"amount":10,"transaction":"Ahmed","status":"deposited"}
-=======
-{"amount":50,"bankId":1,"transaction":"Station Deposit - Amount: 50.0","timestamp":1730686458883,"status":"deposited"}
-{"amount":20,"bankId":1,"transaction":"Station Deposit - Amount: 20.0","timestamp":1730686552430,"status":"deposited"}
-{"amount":100,"bankId":1,"transaction":"Station Deposit - Amount: 100.0","timestamp":1730686606905,"status":"deposited"}
-{"amount":100,"bankId":1,"transaction":"Station Deposit - Amount: 100.0","timestamp":1730686727042,"status":"deposited"}
-{"amount":0,"bankId":1,"transaction":"Station Deposit - Amount: 0.0","timestamp":1730686739514,"status":"deposited"}
->>>>>>> a460b9508c3a3b204795c445d3db1fb94e56bd8a
 {"amount":1,"bankId":1,"transaction":"1","timestamp":1731415841286,"status":"deposited"}
 {"amount":1,"bankId":1,"transaction":"1","timestamp":1731418117712,"status":"deposited"}
 {"amount":1,"bankId":1,"transaction":"1","timestamp":1731418256025,"status":"deposited"}

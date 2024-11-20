@@ -1,6 +1,13 @@
 package GasChainPackage;
 
 public class StationManager implements OrderProcessable, InventoryManageable, DeliveryReceivable, PaymentProcessable {
+
+
+
+
+
+
+
     @Override
     public double checkFuelLevel(String fuelType) {
         // Logic to check current inventory levels

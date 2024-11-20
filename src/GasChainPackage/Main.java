@@ -12,7 +12,7 @@ public class Main {
     private GasStation station;
     private FuelPump fuelPump;
     private Employee employee;
-    private Customer customer;
+//    private Customer customer;
     private Scanner scan;
 
     public Main() {
@@ -23,7 +23,7 @@ public class Main {
         employee.setStation(station);
         station.setBank(bank);
         fuelPump = new FuelPump(transactionHandler, bank, true);
-        customer = new Customer("John Doe");
+//        customer = new Customer("John Doe");
         scan = new Scanner(System.in);
     }
 
@@ -37,7 +37,7 @@ public class Main {
         boolean running = true;
 
         while (running) {
-            System.out.println("\nWhat would you like to do at the Gas Station?");
+            System.out.println("\nWhat is your title?");  //What are you here to do?
             printMenu();
 
             try {
@@ -46,16 +46,16 @@ public class Main {
 
                 switch (userChoice) {
                     case 1:
-                        purchaseGas();
+                        setCustomer();
                         break;
                     case 2:
-                        handleInventory();
+
                         break;
                     case 3:
                         manageMoney();
                         break;
                     case 4:
-                        purchaseItems();
+                        handleInventory();
                         break;
                     case 5:
                         findItem();
@@ -77,27 +77,28 @@ public class Main {
     }
 
     /**
-     * Use Cases
+     * Helper Functions
      */
-    private void purchaseGas() {
-        // Customer provides payment information
-        String paymentInfo = customer.providePaymentInfo();
+    private void printMenu() {
+        System.out.println("1. Customer");
+        System.out.println("2. Employee");
+        System.out.println("3. Manager");
+        System.out.println("4. ");
+        System.out.println("EVERYTHING BELLOW THIS NEEDS TO BE MOVED TO A NEW CLASS");
+        System.out.println("3. Manage Money");
+        System.out.println("4. Stock Inventory");
+        System.out.println("5. Find Item");
+        System.out.println("6. Remove Item");
+        System.out.println("7. Exit");
+    }
 
-        // Assuming we have a way to determine the amount of gas purchased
-        double amount = 0;
-        boolean success = false;
-        try {
-            amount = parseInt(paymentInfo);
-            success = fuelPump.purchaseGas(paymentInfo, station, amount);
-        } catch (Exception e) {
-            System.out.println("An Error occurred while obtaining or processing payment.");
-        }
-
-        if (success) {
-            System.out.println("Thank you for your purchase!");
-        } else {
-            System.out.println("Transaction failed. Please try again.");
-        }
+    private void setCustomer(){
+        System.out.println("Hi Customer! What is your name?");
+        String name = scan.nextLine();
+//        scan.nextLine();
+        System.out.println("NAME: " + name);
+        Customer newCustomer = new Customer(name);
+        System.out.println("Good Bye, " + name + "! Have a great day!");
     }
 
     private void handleInventory() {
@@ -193,61 +194,6 @@ public class Main {
                 station.addToTransactionLog("Deposit pending (Bank closed): $" + physicalCount);
             }
         }
-    }
-
-    private void purchaseItems() {
-        System.out.println("Welcome inside the Gas Station!");
-        boolean running = true;
-        Map<Integer, Integer> myBag = new HashMap<>();
-
-        while (running) {
-            System.out.println("\nWhat would you like to purchase? Enter item ID or 0 to stop.");
-
-            // Display the available stock
-            printStock();
-
-            try {
-                int userChoice = scan.nextInt();
-                scan.nextLine();
-
-                switch (userChoice) {
-                    case 0:
-                        running = false;
-                        break;
-                    default:
-                        boolean validInput =  addToBag(userChoice);
-                        if (validInput) {
-                            System.out.println("Item successfully added to the bag.");
-                            // Check if the item is already in the bag and update its quantity
-                            myBag.put(userChoice, myBag.getOrDefault(userChoice, 0) + 1);
-                        } else {
-                            System.out.println("Unable to add item. It might be out of stock.");
-                        }
-                        break;
-                }
-            } catch (Exception e) {
-                System.out.println("Error: Invalid Input. Please enter a number.");
-                scan.nextLine();
-            }
-        }
-        System.out.println("Would you like to checkout or exit? c/e");
-        char userChoice ;
-        try {
-            userChoice = scan.nextLine().charAt(0);
-            if(userChoice == 'e' || userChoice == 'E') {
-                return;
-            } else if (userChoice == 'c' || userChoice == 'C'){
-                System.out.print("How much are you paying? Sale Total ");
-                System.out.println( getSalesTotal(myBag));
-                double payment = scan.nextDouble();
-                scan.nextLine(); // Clear the newline after nextDouble()
-                System.out.println("Payment ammount: " + payment);
-                completeSale(myBag, payment);
-            }
-        } catch (Exception e) {
-            System.out.println("Error: Invalid Input. Please enter c or e.");
-        }
-        System.out.println("\nThank you for comming into the Gas Station!");
     }
 
     private void findItem() {
@@ -388,18 +334,4 @@ public class Main {
 //            System.out.println("Thank you for your purchase!");
 //        } else {
 //            System.out.println("Transaction failed. Please try again.")
-
-
-    /**
-     * Helper Functions
-     */
-    private void printMenu() {
-        System.out.println("1. Purchase Gas");
-        System.out.println("2. Stock Inventory");
-        System.out.println("3. Manage Money");
-        System.out.println("4. Purchase Items");
-        System.out.println("5. Find Item");
-        System.out.println("6. Remove Item");
-        System.out.println("7. Exit");
-    }
 }
