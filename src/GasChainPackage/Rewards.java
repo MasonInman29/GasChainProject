@@ -43,8 +43,8 @@ public class Rewards {
      * @return
      */
     public int useRewards(double salesTotal, int rewardsToUse, int pts){
-        if(pts > points){return 0;}
-        points -= pts;
-        return pts;
+        if(rewardsToUse > pts || rewardsToUse > salesTotal ){return 0;}
+        points -= rewardsToUse;
+        return (rewardsToUse);
     }
 }

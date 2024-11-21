@@ -174,7 +174,7 @@ public class Customer {
             System.out.println("How many points do you currently have?");
             int points = scan.nextInt();
             rewards = new Rewards(points);
-            System.out.println("You have " + rewards + " rewards points!\nHow many points do you like to use?");
+            System.out.println("You have " + points + " rewards points!\nHow many points do you like to use?");
             rewardsAmount = scan.nextInt();    /**
              * Use Cases
              */
@@ -183,7 +183,7 @@ public class Customer {
                 System.out.println("Insufficient ammount. Enter a number less than " + points );
             }
 //          REWARDS: update rewards ammount
-            myBag.put(-1, Integer.valueOf(rewards.useRewards( getSalesTotal(myBag), rewardsAmount, points)));
+            myBag.put(0, Integer.valueOf(rewards.useRewards( getSalesTotal(myBag), rewardsAmount, points)));
         }
         else{
             System.out.println("Would you like to start a new rewards card? y/n");
@@ -194,9 +194,9 @@ public class Customer {
             }
             rewards = new Rewards();
         }
+        //need to edit the above section
 
-
-        System.out.println("How much are you paying? Sale Total ");
+        System.out.print("How much are you paying? Sale Total: $");
         System.out.println( getSalesTotal(myBag));
         double payment = scan.nextDouble();
         scan.nextLine(); // Clear the newline after nextDouble()

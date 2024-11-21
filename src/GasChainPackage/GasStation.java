@@ -64,61 +64,6 @@ public class GasStation implements FileUtility{
         transactionLog.add(discrepancy);
     }
 
-//    // Method to load JSON data from file
-//    private static JSONObject loadJSONFromFile() {
-//        try {
-//            String content = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
-//            System.out.println(content);
-//            JSONObject json = new JSONObject((Files.readAllLines(Paths.get(FILE_PATH))).toString());
-//            System.out.println("[JSONNNNNN]" + json.toString());
-//            return( new JSONObject(content) );
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
-//
-//    // Method to write JSON data to file
-//    private static void writeJSONToFile(JSONObject itemInfo) {
-//        if (itemInfo == null) {
-//            System.out.println("Error: No data to write to file.");
-//            return;
-//        }
-//        // Write JSON data to file
-//        try (FileWriter file = new FileWriter(FILE_PATH)) {
-//            file.write(itemInfo.toString(4)); // Indent with 4 spaces for readability
-//        } catch (Exception e) {
-//            System.out.println("Error: Unable to write to file at " + FILE_PATH);
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public static boolean updateItemInJSON(int itemId, String keyToUpdate, Object newValue) {
-//        JSONObject allItems = loadJSONFromFile();
-//        if (allItems == null) {
-//            System.out.println("Error: Could not load JSON data.");
-//            return false;
-//        }
-//
-//        // Access the items JSONObject
-//        JSONObject itemsObject = allItems.getJSONObject("items");
-//
-//        // Find the target item by ID
-//        JSONObject targetItem = itemsObject.optJSONObject(String.valueOf(itemId));
-//        if (targetItem == null) {
-//            System.out.println("Error: Item with ID " + itemId + " not found.");
-//            return false;
-//        }
-//
-//        // Update the specified key with the new value
-//        targetItem.put(keyToUpdate, newValue);
-////        System.out.println("Updated item ID " + itemId + ": Set " + keyToUpdate + " to " + newValue);
-//
-//        // Save the updated JSON back to the file
-//        writeJSONToFile(allItems);
-//        return true;
-//    }
-
     /**
      * deposits of money into a bank
      * @param paymentInfo
@@ -131,7 +76,6 @@ public class GasStation implements FileUtility{
             System.out.println("Station balance updated: $" + balance);
         }
     }
-
 
     public void performPurchaseProcess() {
         // Inventory check
@@ -241,27 +185,6 @@ public class GasStation implements FileUtility{
     /**
      *
      */
-//    public static void printStock(){
-//        JSONArray itemInfo = FileUtility.loadJSONFromFile(FILE_PATH);
-//        System.out.println("JSON OBJ: ");
-//        System.out.println(itemInfo.toString());
-//        JSONObject itemsObject = itemInfo.getJSONObject("items");
-//        System.out.println("JSON OBJ of ITEMS: ");
-//
-//        for (Object keyStr : itemsObject.keySet()){
-//            System.out.println(keyStr);
-//            // Convert key to an integer
-//            int key = Integer.valueOf(String.valueOf(keyStr));
-//
-//            JSONObject item = itemsObject.getJSONObject(String.valueOf(keyStr));
-//            int id = item.getInt("id");
-//            String name = item.getString("name");
-//            int quantity = item.getInt("quantity");
-//
-//            // Print the item details
-//            System.out.println("ID: " + id + ", Name: " + name + ", Quantity: " + quantity);
-//        }
-//    }
     public static void printStock() {
         // Load the JSON file as a JSONObject
         JSONArray items = FileUtility.loadJSONFromFile(FILE_PATH);
@@ -275,9 +198,10 @@ public class GasStation implements FileUtility{
             int id = item.getInt("id");
             String name = item.getString("name");
             int quantity = item.getInt("quantity");
+            double price = (double)item.get("price");
 
             // Print the item details
-            System.out.println("ID: " + id + ", Name: " + name + ", Quantity: " + quantity);
+            System.out.println("ID: " + id + ", Name: " + name + ", Quantity: " + quantity + ", $" + price);
         }
     }
 
@@ -290,6 +214,10 @@ public class GasStation implements FileUtility{
             Integer id = entry.getKey(); // Get item ID from map
             Integer quantity = entry.getValue(); // Get the quantity from the map
 
+            if(id == 0){
+                total -= quantity;
+                continue;
+            }
             JSONObject item = itemsArray.searchByID(id); // Get the item from JSON by ID
 
             // Check if the item exists in the JSON file
@@ -307,19 +235,28 @@ public class GasStation implements FileUtility{
     public static void printBag(Map<Integer, Integer> myBag) {
         JSONArray itemInfo = FileUtility.loadJSONFromFile(FILE_PATH); // Assume this method loads the JSON data correctly
         JSONObject itemsObject = itemInfo.getJSONObject("items");
+        int rewards = 0;
 
         for (Object keyStr : myBag.keySet()){
             // Convert key to an integer
             int key = Integer.valueOf(String.valueOf(keyStr));
+            System.out.println(key);
 
-            JSONObject item = itemsObject.getJSONObject(String.valueOf(keyStr));
-            int id = item.getInt("id");
-            String name = item.getString("name");
-            int quantity = item.getInt("quantity");
+            if(key == 0){
+                rewards = myBag.get(key);
+                continue;
+            }
+
+//            JSONObject item = itemsObject.getJSONObject(String.valueOf(keyStr));
+//            int id = item.getInt("id");
+//            String name = item.getString("name");
+//            int quantity = item.getInt("quantity");
+//            double price = (double)item.get("price");
 
             // Print the item details
-            System.out.println("ID: " + id + ", Name: " + name + ", Quantity: " + quantity);
+//            System.out.println(", Name: " + name + ", Quantity: " + quantity + ", $" + price);
         }
+        System.out.println("REWARDS USED: $" + rewards);
     }
 
     /**
@@ -346,6 +283,7 @@ public class GasStation implements FileUtility{
         depositToBank(total);
         r.addPoints(total);
         System.out.println("\nChange Back: $" + (paymentAmount - total));
+        System.out.println("Rewards After Purchase: " + r.getRewards() + " points!");
         return true;
     }
 

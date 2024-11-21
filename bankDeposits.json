@@ -1,2 +1,4 @@
 [{"amount":10,"transaction":"23","status":"deposited"},
 {"amount":10,"transaction":"Ahmed","status":"deposited"}]
+{"amount": 26.5, "bankId": 1, "transaction": "Station Deposit - Amount: 26.5", "timestamp": 1732207952752, "status": "deposited"}
+{"amount": 5.0, "bankId": 1, "transaction": "Station Deposit - Amount: 5.0", "timestamp": 1732208600612, "status": "deposited"}
