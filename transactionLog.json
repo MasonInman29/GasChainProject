@@ -1,6 +1,6 @@
-{"paymentInfo":"23","status":"success"}
-{"paymentInfo":"Ahmed","status":"success"}
-{"paymentInfo":"1","status":"success"}
-{"paymentInfo":"1","status":"success"}
-{"paymentInfo":"1","status":"success"}
-{"paymentInfo":"0","status":"success"}
+[{"paymentInfo":"23","status":"success"},
+{"paymentInfo":"Ahmed","status":"success"},
+{"paymentInfo":"1","status":"success"},
+{"paymentInfo":"1","status":"success"},
+{"paymentInfo":"1","status":"success"},
+{"paymentInfo":"0","status":"success"}]

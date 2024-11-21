@@ -28,6 +28,31 @@ public class JSONArray {
         return obj instanceof JSONObject ? (JSONObject) obj : null;
     }
 
+    public JSONObject getJSONObject(String key) {
+        for (Object obj : list) {
+            if (obj instanceof JSONObject) {
+                JSONObject jsonObject = (JSONObject) obj;
+                if (jsonObject.keySet().contains(key)) {
+                    return jsonObject;
+                }
+            }
+        }
+        return null;
+    }
+
+    public JSONObject searchByID(int id) {
+        // Search for the item with the given ID
+        JSONObject targetItem = null;
+        for (int i = 0; i < list.size(); i++) {
+            JSONObject item = getJSONObject(i);
+            if (item.getInt("id") == id) {
+                targetItem = item;
+                break;
+            }
+        }
+        return targetItem;
+    }
+
     public int length() {
         return list.size();
     }

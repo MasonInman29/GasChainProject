@@ -1,6 +1,2 @@
-{"amount":10,"transaction":"23","status":"deposited"}
-{"amount":10,"transaction":"Ahmed","status":"deposited"}
-{"amount":1,"bankId":1,"transaction":"1","timestamp":1731415841286,"status":"deposited"}
-{"amount":1,"bankId":1,"transaction":"1","timestamp":1731418117712,"status":"deposited"}
-{"amount":1,"bankId":1,"transaction":"1","timestamp":1731418256025,"status":"deposited"}
-{"amount":0,"bankId":1,"transaction":"0","timestamp":1731430792807,"status":"deposited"}
+[{"amount":10,"transaction":"23","status":"deposited"},
+{"amount":10,"transaction":"Ahmed","status":"deposited"}]
