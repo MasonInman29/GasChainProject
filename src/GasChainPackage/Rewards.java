@@ -39,12 +39,12 @@ public class Rewards {
      * next iteration - Lindsey
      * @param salesTotal
      * @param rewardsToUse
-     * @param points
+     * @param pts
      * @return
      */
     public int useRewards(double salesTotal, int rewardsToUse, int pts){
-        if(use > points){return 0;}
-        points -= use;
+        if(pts > points){return 0;}
+        points -= pts;
         return pts;
     }
 }

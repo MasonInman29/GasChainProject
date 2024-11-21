@@ -185,7 +185,7 @@ public class Customer {
                 System.out.println("Insufficient ammount. Enter a number less than " + points );
             }
 //          REWARDS: update rewards ammount
-            myBag.put(-1, Integer.valueOf(station.useRewards( getSalesTotal(myBag), rewardsAmount, points)));
+            myBag.put(-1, Integer.valueOf(rewards.useRewards( getSalesTotal(myBag), rewardsAmount, points)));
         }
         else{
             System.out.println("Would you like to start a new rewards card? y/n");
