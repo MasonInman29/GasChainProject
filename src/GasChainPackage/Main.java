@@ -12,7 +12,7 @@ public class Main {
     private GasStation station;
     private FuelPump fuelPump;
     private Employee employee;
-    private Customer customer;
+//    private Customer customer;
     private Scanner scan;
 
     private StationManager stationManager;
@@ -29,7 +29,7 @@ public class Main {
         employee.setStation(station);
         station.setBank(bank);
         fuelPump = new FuelPump(transactionHandler, bank, true);
-        customer = new Customer("John Doe");
+//        customer = new Customer("John Doe");
         scan = new Scanner(System.in);
     }
 
@@ -43,7 +43,7 @@ public class Main {
         boolean running = true;
 
         while (running) {
-            System.out.println("\nWhat would you like to do at the Gas Station?");
+            System.out.println("\nWhat is your title?");  //What are you here to do?
             printMenu();
 
             try {
@@ -52,28 +52,28 @@ public class Main {
 
                 switch (userChoice) {
                     case 1:
-                        purchaseGas();
+                        setCustomer();
                         break;
                     case 2:
-                        handleInventory();
+
                         break;
                     case 3:
                         manageMoney();
                         break;
                     case 4:
-                        purchaseItems();
+                        handleInventory();
                         break;
                     case 5:
-                        running = false;
+                        findItem();
                         break;
                     case 6:
-                        performOrderAssessment();
+                        removeItem();
                         break;
                     case 7:
-                        performPurchaseProcess();
+                        performOrderAssessment();
                         break;
                     case 8:
-                        running = false;
+                        performPurchaseProcess();
                         break;
                     default:
                         System.out.println("Error: Invalid option");
@@ -86,27 +86,28 @@ public class Main {
     }
 
     /**
-     * Use Cases
+     * Helper Functions
      */
-    private void purchaseGas() {
-        // Customer provides payment information
-        String paymentInfo = customer.providePaymentInfo();
+    private void printMenu() {
+        System.out.println("1. Customer");
+        System.out.println("2. Employee");
+        System.out.println("3. Manager");
+        System.out.println("4. ");
+        System.out.println("EVERYTHING BELLOW THIS NEEDS TO BE MOVED TO A NEW CLASS");
+        System.out.println("3. Manage Money");
+        System.out.println("4. Stock Inventory");
+        System.out.println("5. Find Item");
+        System.out.println("6. Remove Item");
+        System.out.println("7. Exit");
+    }
 
-        // Assuming we have a way to determine the amount of gas purchased
-        double amount = 0;
-        boolean success = false;
-        try {
-            amount = parseInt(paymentInfo);
-            success = fuelPump.purchaseGas(paymentInfo, station, amount);
-        } catch (Exception e) {
-            System.out.println("An Error occurred while obtaining or processing payment.");
-        }
-
-        if (success) {
-            System.out.println("Thank you for your purchase!");
-        } else {
-            System.out.println("Transaction failed. Please try again.");
-        }
+    private void setCustomer(){
+        System.out.println("Hi Customer! What is your name?");
+        String name = scan.nextLine();
+//        scan.nextLine();
+        System.out.println("NAME: " + name);
+        Customer newCustomer = new Customer(name, station);
+        System.out.println("Good Bye, " + name + "! Have a great day!");
     }
 
     private void handleInventory() {
@@ -204,59 +205,124 @@ public class Main {
         }
     }
 
-    private void purchaseItems() {
-        System.out.println("Welcome inside the Gas Station!");
-        boolean running = true;
-        Map<Integer, Integer> myBag = new HashMap<>();
+    private void findItem() {
+        System.out.println("\n=== Find Item ===");
 
-        while (running) {
-            System.out.println("\nWhat would you like to purchase? Enter item ID or 0 to stop.");
+        // Get the current inventory from the station
+        Map<String, Integer> currentInventory = station.getAllInventory();
 
-            // Display the available stock
-            printStock();
+        if (currentInventory.isEmpty()) {
+            System.out.println("Inventory is empty.");
+            return;
+        }
 
-            try {
-                int userChoice = scan.nextInt();
-                scan.nextLine();
+        // Get search input from employee
+        System.out.println("Enter search term (item name):");
+        String searchTerm = scan.nextLine().trim().toLowerCase();
 
-                switch (userChoice) {
-                    case 0:
-                        running = false;
-                        break;
-                    default:
-                        boolean validInput =  addToBag(userChoice);
-                        if (validInput) {
-                            System.out.println("Item successfully added to the bag.");
-                            // Check if the item is already in the bag and update its quantity
-                            myBag.put(userChoice, myBag.getOrDefault(userChoice, 0) + 1);
-                        } else {
-                            System.out.println("Unable to add item. It might be out of stock.");
-                        }
-                        break;
+        // Track if we found any matches
+        boolean foundMatch = false;
+        System.out.println("\nSearch Results:");
+
+        // Search through inventory
+        for (Map.Entry<String, Integer> entry : currentInventory.entrySet()) {
+            String itemName = entry.getKey().toLowerCase();
+            if (itemName.contains(searchTerm)) {
+                System.out.println("Item: " + entry.getKey());
+                System.out.println("Quantity in Stock: " + entry.getValue());
+                if (entry.getValue() <= station.getStoreInventory().getReorderThreshold()) {
+                    System.out.println("WARNING: Stock is low!");
                 }
-            } catch (Exception e) {
-                System.out.println("Error: Invalid Input. Please enter a number.");
-                scan.nextLine();
+                System.out.println("------------------------");
+                foundMatch = true;
             }
         }
-        System.out.println("Would you like to checkout or exit? c/e");
-        char userChoice ;
+
+        if (!foundMatch) {
+            System.out.println("No items found matching '" + searchTerm + "'");
+            System.out.println("\nAvailable items:");
+            for (String item : currentInventory.keySet()) {
+                System.out.println("- " + item);
+            }
+        }
+    }
+
+    private void removeItem() {
+        System.out.println("\n=== Remove Item ===");
+
+        // Get the current inventory from the station
+        Map<String, Integer> currentInventory = station.getAllInventory();
+
+        if (currentInventory.isEmpty()) {
+            System.out.println("Inventory is empty.");
+            return;
+        }
+
+        // Display current inventory
+        System.out.println("\nCurrent Inventory:");
+        for (Map.Entry<String, Integer> entry : currentInventory.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue() + " units");
+        }
+
+        // Get item to remove
+        System.out.println("\nEnter item name to remove:");
+        String itemToRemove = scan.nextLine().trim();
+
+        if (!currentInventory.containsKey(itemToRemove)) {
+            System.out.println("Error: Item '" + itemToRemove + "' not found in inventory");
+            return;
+        }
+
+        // Get quantity to remove
+        System.out.println("Current quantity of " + itemToRemove + ": " +
+                currentInventory.get(itemToRemove));
+        System.out.println("Enter quantity to remove:");
+
         try {
-            userChoice = scan.nextLine().charAt(0);
-            if(userChoice == 'e' || userChoice == 'E') {
+            int quantityToRemove = scan.nextInt();
+            scan.nextLine();
+
+            if (quantityToRemove <= 0) {
+                System.out.println("Error: Quantity must be greater than 0");
                 return;
-            } else if (userChoice == 'c' || userChoice == 'C'){
-                System.out.print("How much are you paying? Sale Total ");
-                System.out.println( getSalesTotal(myBag));
-                double payment = scan.nextDouble();
-                scan.nextLine(); // Clear the newline after nextDouble()
-                System.out.println("Payment ammount: " + payment);
-                completeSale(myBag, payment);
             }
+
+            if (quantityToRemove > currentInventory.get(itemToRemove)) {
+                System.out.println("Error: Cannot remove more items than available in inventory");
+                return;
+            }
+
+            // Prepare lists for inventory update
+            List<String> items = new ArrayList<>();
+            List<Integer> quantities = new ArrayList<>();
+            items.add(itemToRemove);
+            quantities.add(-quantityToRemove); // Negative quantity for removal
+
+            boolean updateSuccess = station.updateInventoryLevels(items, quantities);
+
+            if (updateSuccess) {
+                System.out.println("Successfully removed " + quantityToRemove + " units of " +
+                        itemToRemove);
+                System.out.println("Updated quantity: " +
+                        station.getAllInventory().getOrDefault(itemToRemove, 0));
+            } else {
+                System.out.println("Error: Failed to update inventory");
+                System.out.println("Would you like to retry? (Y/N)");
+                String retry = scan.nextLine();
+                if (retry.equalsIgnoreCase("Y")) {
+                    removeItem();
+                }
+            }
+
+        } catch (InputMismatchException e) {
+            // Extension 4a: Handle invalid input
+            System.out.println("Error: Please enter a valid number");
+            scan.nextLine();
         } catch (Exception e) {
-            System.out.println("Error: Invalid Input. Please enter c or e.");
+            // Extension 5a: Handle other system errors
+            System.out.println("System error occurred: " + e.getMessage());
+            System.out.println("Please try again later");
         }
-        System.out.println("\nThank you for comming into the Gas Station!");
     }
 
 
@@ -330,15 +396,5 @@ public class Main {
         }
     }
 
-    private void printMenu() {
-        System.out.println("1. Purchase Gas");
-        System.out.println("2. Stock Inventory");
-        System.out.println("3. Manage Money");
-        System.out.println("4. Purchase Items");
-        System.out.println("5. Inventory Check");
-        System.out.println("6. Order Assessment");
-        System.out.println("7. Perform Purchase Process");
-        System.out.println("8. Exit");
-    }
 }
 

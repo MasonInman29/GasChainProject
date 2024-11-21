@@ -8,7 +8,8 @@
 /build/
 /target/
 out/
-
+*.class
+/out/
 # Ignore dependency directories
 /.gradle/
 /.mvn/
@@ -69,5 +70,3 @@ yarn.lock
 # Ignore OS files
 .DS_Store
 Thumbs.db
-
-*.json
