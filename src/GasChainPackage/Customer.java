@@ -16,8 +16,9 @@ public class Customer {
     private Scanner scan;
     private Map<Integer, Integer> myBag = new HashMap<>();
 
-    public Customer(String name) {
+    public Customer(String name, GasStation station) {
         this.name = name;
+        this.station = station;
         transactionHandler = new TransactionHandler();
         bank = new Bank(1, 0.0);
         fuelPump = new FuelPump(transactionHandler, bank, true);
@@ -41,10 +42,8 @@ public class Customer {
             printMenu();
 
             try {
-                System.out.println("IN TRY");
                 int userChoice = scan.nextInt();
                 scan.nextLine();
-                System.out.println("UC:_" + userChoice + ".");
 
                 switch (userChoice) {
                     case 1:
@@ -128,7 +127,6 @@ public class Customer {
             System.out.println("What would you like to purchase? Enter item ID or 0 to stop.");
             station.printStock();
             try {
-                System.out.println("IN TRY");
                 int userChoice = scan.nextInt();
                 scan.nextLine();
 
@@ -168,7 +166,7 @@ public class Customer {
     private void purchaseItems() {
         Rewards rewards = null;
         int rewardsAmount = 0;
-        System.out.print("Your total today is: $" + getSalesTotal(myBag));
+        System.out.println("Your total today is: $" + getSalesTotal(myBag));
 
         System.out.println("Will you be using rewards today? y/n");
         char userChoice = scan.nextLine().charAt(0);
@@ -198,7 +196,7 @@ public class Customer {
         }
 
 
-        System.out.print("How much are you paying? Sale Total ");
+        System.out.println("How much are you paying? Sale Total ");
         System.out.println( getSalesTotal(myBag));
         double payment = scan.nextDouble();
         scan.nextLine(); // Clear the newline after nextDouble()
