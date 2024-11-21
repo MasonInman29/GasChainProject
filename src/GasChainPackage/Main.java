@@ -24,7 +24,7 @@ public class Main {
         transactionHandler = new TransactionHandler();
         employee = new Employee(1, "Jane Smith", "Manager");
         station = new GasStation(1, "456 Station St", employee);
-        stationManager = new StationManager();
+        stationManager = new StationManager("Ahmed","iowaGasStation");
         fuelSupplier = new FuelSupplier();
         employee.setStation(station);
         station.setBank(bank);
@@ -64,7 +64,7 @@ public class Main {
                         purchaseItems();
                         break;
                     case 5:
-                        running = false;
+                        MaintenanceRequestSystem();
                         break;
                     case 6:
                         performOrderAssessment();
@@ -73,8 +73,10 @@ public class Main {
                         performPurchaseProcess();
                         break;
                     case 8:
-                        running = false;
+                        FireSafetySystem();
                         break;
+                    case 9:
+                        running = false;
                     default:
                         System.out.println("Error: Invalid option");
                 }
@@ -83,6 +85,60 @@ public class Main {
                 scan.nextLine();
             }
         }
+    }
+    /**
+     * Use Cases
+     */
+    private void FireSafetySystem() {
+        // Create fire extinguishers
+        FireExtinguisher extinguisher1 = new FireExtinguisher("Pump 1", true, "2025-12-31");
+        FireExtinguisher extinguisher2 = new FireExtinguisher("Storage Room", false, "2023-06-15");
+
+        // Create actors
+        FireSafetyInspector inspector = new FireSafetyInspector();
+        Employee employee1 = new Employee(12,"Alice","Employee");
+        Employee employee2 = new Employee(3798,"Bob","Employee");
+        StationManager manager1 = new StationManager("John","iowaGasStation");
+        StationManager manager2 = new StationManager("Sarah","iowaGasStation");
+
+        // Conduct inspections
+        inspector.conductInspection(extinguisher1);
+        inspector.conductInspection(extinguisher2);
+
+        // Conduct training sessions
+        inspector.trainEmployees(Arrays.asList(employee1, employee2));
+        inspector.trainStationManagers(Arrays.asList(manager1, manager2));
+
+        // Conduct a fire drill
+        inspector.conductFireDrill();
+    }
+
+    /**
+     * Use Cases
+     */
+    private void MaintenanceRequestSystem() {
+        // Create actors
+        Employee employee = new Employee(81,"Mohammed","Employee");
+        StationManager stationManager = new StationManager("Ahmed","IowaGasStation");
+        MaintenanceTechnician technician = new MaintenanceTechnician("John Doe", "Mechanical");
+
+        // Log a maintenance request
+        MaintenanceRequest request = employee.logMaintenanceRequest("Fuel pump malfunction", "Pump 3", "Urgent");
+
+        // Station Manager reviews and assigns task
+        stationManager.reviewRequest(request);
+        stationManager.assignTechnician(request);
+
+        // Technician inspects and performs maintenance
+        technician.inspectIssue(request);
+        technician.performMaintenance(request);
+
+        // Technician reports status to Station Manager
+        technician.reportStatus(request);
+
+        // Close the maintenance request
+        stationManager.closeRequest(request);
+
     }
 
     /**
@@ -335,10 +391,11 @@ public class Main {
         System.out.println("2. Stock Inventory");
         System.out.println("3. Manage Money");
         System.out.println("4. Purchase Items");
-        System.out.println("5. Inventory Check");
+        System.out.println("5. RequestMaintenance");
         System.out.println("6. Order Assessment");
         System.out.println("7. Perform Purchase Process");
-        System.out.println("8. Exit");
+        System.out.println("8. FireSafetySystem");
+        System.out.println("9. Exit");
     }
 }
 

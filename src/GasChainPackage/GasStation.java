@@ -38,7 +38,7 @@ public class GasStation {
         this.storeInventory = new StoreInventory();
         this.transactionLog = new ArrayList<>();
         this.bank = new Bank(bankID, 0);
-        this.stationManager = new StationManager();
+        this.stationManager = new StationManager("Ahmed","iowaGasStation");
         this.fuelSupplier = new FuelSupplier();
     }
 

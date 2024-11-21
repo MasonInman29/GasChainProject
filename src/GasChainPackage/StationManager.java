@@ -14,7 +14,9 @@ public class StationManager implements OrderProcessable, InventoryManageable, De
 
     private FuelSupplier supplier;
 
-    public StationManager() {
+    private String name;
+    private String stationName;
+    public StationManager(String name, String stationName) {
         // Initialize the inventory, order history, and transaction log
         inventory = new HashMap<>();
         orderHistory = new ArrayList<>();
@@ -24,8 +26,17 @@ public class StationManager implements OrderProcessable, InventoryManageable, De
         // Initial inventory setup
         inventory.put("Gasoline", 50.0);
         inventory.put("Diesel", 30.0);
+        this.name = name;
+        this.stationName = stationName;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getStationName() {
+        return stationName;
+    }
 
     @Override
     public double checkFuelLevel(String fuelType) {
@@ -135,6 +146,45 @@ public class StationManager implements OrderProcessable, InventoryManageable, De
         } else {
             System.out.println("Fuel delivery verification failed. Delivery not accepted.");
             return false;
+        }
+    }
+
+    public void reviewRequest(MaintenanceRequest request) {
+        System.out.println("Station Manager: Reviewing request - " + request);
+        if ("Urgent".equals(request.getPriorityLevel())) {
+            System.out.println("Station Manager: Immediate action required.");
+        } else {
+            System.out.println("Station Manager: Task assigned for routine maintenance.");
+        }
+    }
+
+    public void assignTechnician(MaintenanceRequest request) {
+        System.out.println("Station Manager: Assigning technician for " + request);
+        // Assuming the technician is always available
+        request.setStatus("In Progress");
+    }
+
+    public void closeRequest(MaintenanceRequest request) {
+        System.out.println("Station Manager: Closing request - " + request);
+        request.setStatus("Closed");
+    }
+
+    public void scheduleMonthlyMaintenance(FireExtinguisher extinguisher) {
+        System.out.println("Station Manager: Scheduling monthly maintenance for extinguisher at " + extinguisher.getLocation());
+        // Simulating checking of expiration date
+        if (extinguisher.getExpirationDate().compareTo("2024-12-31") < 0) {
+            System.out.println("Station Manager: Expired extinguisher. Replace immediately.");
+        } else {
+            System.out.println("Station Manager: Extinguisher is in good condition.");
+        }
+    }
+
+    public void verifyCompliance(FireExtinguisher extinguisher) {
+        System.out.println("Station Manager: Verifying compliance of extinguisher at " + extinguisher.getLocation());
+        if (!extinguisher.isFunctional()) {
+            System.out.println("Station Manager: Fire extinguisher malfunction. Schedule replacement.");
+        } else {
+            System.out.println("Station Manager: Fire extinguisher is compliant.");
         }
     }
 }
