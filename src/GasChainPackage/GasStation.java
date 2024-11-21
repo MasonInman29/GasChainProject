@@ -1,7 +1,6 @@
 package GasChainPackage;
 
 
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,7 +8,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 
-public class GasStation implements FileUtility{
+public class GasStation {
     private int stationID;
     private StoreInventory storeInventory;
     private double balance;
@@ -64,6 +63,59 @@ public class GasStation implements FileUtility{
         transactionLog.add(discrepancy);
     }
 
+    // Method to load JSON data from file
+    private static JSONObject loadJSONFromFile() {
+        try {
+            String content = new String(Files.readAllBytes(Paths.get(FILE_PATH)));
+            return( new JSONObject(content));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    // Method to write JSON data to file
+    private static void writeJSONToFile(JSONObject itemInfo) {
+        if (itemInfo == null) {
+            System.out.println("Error: No data to write to file.");
+            return;
+        }
+        // Write JSON data to file
+        try (FileWriter file = new FileWriter(FILE_PATH)) {
+            file.write(itemInfo.toString(4)); // Indent with 4 spaces for readability
+        } catch (Exception e) {
+            System.out.println("Error: Unable to write to file at " + FILE_PATH);
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean updateItemInJSON(int itemId, String keyToUpdate, Object newValue) {
+        JSONObject allItems = loadJSONFromFile();
+        if (allItems == null) {
+            System.out.println("Error: Could not load JSON data.");
+            return false;
+        }
+
+        // Access the items JSONObject
+        JSONObject itemsObject = allItems.getJSONObject("items");
+
+        // Find the target item by ID
+        JSONObject targetItem = itemsObject.optJSONObject(String.valueOf(itemId));
+        if (targetItem == null) {
+            System.out.println("Error: Item with ID " + itemId + " not found.");
+            return false;
+        }
+
+        // Update the specified key with the new value
+        targetItem.put(keyToUpdate, newValue);
+//        System.out.println("Updated item ID " + itemId + ": Set " + keyToUpdate + " to " + newValue);
+
+        // Save the updated JSON back to the file
+        writeJSONToFile(allItems);
+        return true;
+    }
+
     /**
      * deposits of money into a bank
      * @param paymentInfo
@@ -76,6 +128,7 @@ public class GasStation implements FileUtility{
             System.out.println("Station balance updated: $" + balance);
         }
     }
+
 
     public void performPurchaseProcess() {
         // Inventory check
@@ -103,7 +156,6 @@ public class GasStation implements FileUtility{
         }
         return false;
     }
-
     public double getStoreFunds() {
 
         return balance;
@@ -163,11 +215,10 @@ public class GasStation implements FileUtility{
      * @return
      */
     public static boolean addToBag(int itemid) {
-        JSONArray allItems = FileUtility.loadJSONFromFile(FILE_PATH); //assume JSON is loaded correctly
+        Integer itemID = Integer.valueOf(itemid);
+        JSONObject allItems = loadJSONFromFile(); //assume JSON is loaded correctly
         // Get the item
-        //JSONObject item = allItems.getJSONObject(itemid); //This is an index value but I only have the item id value
-        JSONObject item = allItems.searchByID(itemid);
-
+        JSONObject item = allItems.getJSONObject("items").getJSONObject(String.valueOf(itemID));
 
         // Get the quantity and check if the item is in stock
         int quantity = item.getInt("quantity");
@@ -177,7 +228,7 @@ public class GasStation implements FileUtility{
         }
 
         // Update the quantity in the JSON object
-        FileUtility.updateItemInJSON(item.getInt("id"), "quantity",  quantity - 1, FILE_PATH);
+        updateItemInJSON(item.getInt("id"), "quantity",  quantity - 1);
         System.out.println("Item " + item.getString("name") + " added to bag.");
         return true;
     }
@@ -186,27 +237,26 @@ public class GasStation implements FileUtility{
      *
      */
     public static void printStock() {
-        // Load the JSON file as a JSONObject
-        JSONArray items = FileUtility.loadJSONFromFile(FILE_PATH);
+        JSONObject itemInfo = loadJSONFromFile(); // Assume this method loads the JSON data correctly
+        JSONObject itemsObject = itemInfo.getJSONObject("items");
 
+        for (Object keyStr : itemsObject.keySet()){
+            // Convert key to an integer
+            int key = Integer.valueOf(String.valueOf(keyStr));
 
-        // Loop through the array of items
-        for (int i = 0; i < items.length(); i++) {
-            JSONObject item = items.getJSONObject(i);
-
-            // Extract item details
+            JSONObject item = itemsObject.getJSONObject(String.valueOf(keyStr));
             int id = item.getInt("id");
             String name = item.getString("name");
             int quantity = item.getInt("quantity");
-            double price = (double)item.get("price");
 
             // Print the item details
-            System.out.println("ID: " + id + ", Name: " + name + ", Quantity: " + quantity + ", $" + price);
+            System.out.println("ID: " + id + ", Name: " + name + ", Quantity: " + quantity);
         }
     }
 
     public static double getSalesTotal(Map<Integer, Integer> items) {
-        JSONArray itemsArray = FileUtility.loadJSONFromFile(FILE_PATH); // Load the JSON data
+        JSONObject itemInfo = loadJSONFromFile(); // Load the JSON data
+        JSONObject itemsArray = itemInfo.getJSONObject("items");
         double total = 0;
 
         // Iterate through the items in the provided map
@@ -214,11 +264,7 @@ public class GasStation implements FileUtility{
             Integer id = entry.getKey(); // Get item ID from map
             Integer quantity = entry.getValue(); // Get the quantity from the map
 
-            if(id == 0){
-                total -= quantity;
-                continue;
-            }
-            JSONObject item = itemsArray.searchByID(id); // Get the item from JSON by ID
+            JSONObject item = itemsArray.getJSONObject(String.valueOf(id)); // Get the item from JSON by ID
 
             // Check if the item exists in the JSON file
             if (item != null) {
@@ -233,40 +279,30 @@ public class GasStation implements FileUtility{
     }
 
     public static void printBag(Map<Integer, Integer> myBag) {
-        JSONArray itemInfo = FileUtility.loadJSONFromFile(FILE_PATH); // Assume this method loads the JSON data correctly
+        JSONObject itemInfo = loadJSONFromFile(); // Assume this method loads the JSON data correctly
         JSONObject itemsObject = itemInfo.getJSONObject("items");
-        int rewards = 0;
 
         for (Object keyStr : myBag.keySet()){
             // Convert key to an integer
             int key = Integer.valueOf(String.valueOf(keyStr));
-            System.out.println(key);
 
-            if(key == 0){
-                rewards = myBag.get(key);
-                continue;
-            }
-
-//            JSONObject item = itemsObject.getJSONObject(String.valueOf(keyStr));
-//            int id = item.getInt("id");
-//            String name = item.getString("name");
-//            int quantity = item.getInt("quantity");
-//            double price = (double)item.get("price");
+            JSONObject item = itemsObject.getJSONObject(String.valueOf(keyStr));
+            int id = item.getInt("id");
+            String name = item.getString("name");
+            int quantity = item.getInt("quantity");
 
             // Print the item details
-//            System.out.println(", Name: " + name + ", Quantity: " + quantity + ", $" + price);
+            System.out.println("ID: " + id + ", Name: " + name + ", Quantity: " + quantity);
         }
-        System.out.println("REWARDS USED: $" + rewards);
     }
 
     /**
-     * USE CASE: Employee sell Items
+     *
      * @param items
      * @param paymentAmount
      * @return
      */
-    public boolean completeSale(Map<Integer, Integer> items, double paymentAmount, Rewards r, int rewardsAmount) {
-
+    public static boolean completeSale(Map<Integer, Integer> items, double paymentAmount) {
         double total = getSalesTotal(items); // Get the total cost from the map of items
 
         if (total > paymentAmount) { // Check if payment is insufficient
@@ -280,10 +316,7 @@ public class GasStation implements FileUtility{
         System.out.println("Sale completed successfully. Total: " + total + ", Paid: " + paymentAmount);
         System.out.println("Sales Items: " );
         printBag(items);
-        depositToBank(total);
-        r.addPoints(total);
         System.out.println("\nChange Back: $" + (paymentAmount - total));
-        System.out.println("Rewards After Purchase: " + r.getRewards() + " points!");
         return true;
     }
 
@@ -299,9 +332,4 @@ public class GasStation implements FileUtility{
         return true;
     }
 
-    @Override
-    public boolean writeToFile(String fileName, JSONObject jsonObject) throws IOException {
-        // GasStation does not need this utility method
-        return false;
-    }
 }
