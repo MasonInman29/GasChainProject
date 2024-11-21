@@ -90,7 +90,24 @@ public class JSONObject {
         return parsedData;
     }
     public String toString() {
-        return data.toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        boolean first = true;
+        for (Map.Entry<String, Object> entry : data.entrySet()) {
+            if (!first) {
+                sb.append(", ");
+            }
+            sb.append("\"").append(entry.getKey()).append("\": ");
+            Object value = entry.getValue();
+            if (value instanceof String) {
+                sb.append("\"").append(value).append("\"");
+            } else {
+                sb.append(value);
+            }
+            first = false;
+        }
+        sb.append("}");
+        return sb.toString();
     }
     public String toString(int indentFactor) throws Exception {
         StringWriter w = new StringWriter();

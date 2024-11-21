@@ -97,7 +97,7 @@ public class Main {
         String name = scan.nextLine();
 //        scan.nextLine();
         System.out.println("NAME: " + name);
-        Customer newCustomer = new Customer(name);
+        Customer newCustomer = new Customer(name, station);
         System.out.println("Good Bye, " + name + "! Have a great day!");
     }
 
