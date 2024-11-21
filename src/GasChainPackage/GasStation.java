@@ -17,7 +17,7 @@ public class GasStation implements FileUtility{
     private FuelSupplier fuelSupplier;
     private final int bankID = 1;
     private Bank bank;
-    private static final String FILE_PATH = "itemInformationTest.json";
+    private static final String FILE_PATH = "itemInformation.json";
 
     private String location;
     private Employee cashier;
