@@ -75,6 +75,9 @@ public class Main {
                     case 8:
                         performPurchaseProcess();
                         break;
+                    case 9:
+                        running = false;
+                        break;
                     default:
                         System.out.println("Error: Invalid option");
                 }
@@ -96,9 +99,11 @@ public class Main {
         System.out.println("EVERYTHING BELLOW THIS NEEDS TO BE MOVED TO A NEW CLASS");
         System.out.println("3. Manage Money");
         System.out.println("4. Stock Inventory");
-        System.out.println("5. Find Item");
-        System.out.println("6. Remove Item");
-        System.out.println("7. Exit");
+        System.out.println("5. Find Item"); //Demo 2
+        System.out.println("6. Remove Item"); //Demo 2
+        System.out.println("7. Perform Order Assessment"); //Demo 2
+        System.out.println("8. Perform Purchase Process"); //Demo 2
+        System.out.println("9. Exit");
     }
 
     private void setCustomer(){
