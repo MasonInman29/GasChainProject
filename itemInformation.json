@@ -1,4 +1,4 @@
-[{"quantity": 17, "price": 2.25, "name": "Hot Dog", "maxCapacity": 18, "id": 11},
+[{"quantity": 16, "price": 2.25, "name": "Hot Dog", "maxCapacity": 18, "id": 11},
 {"quantity": 23, "price": 1.75, "name": "Muffin", "maxCapacity": 25, "id": 12},
 {"quantity": 100, "price": 0.5, "name": "Mints", "maxCapacity": 100, "id": 13},
 {"quantity": 20, "price": 5.0, "name": "Motor Oil", "maxCapacity": 20, "id": 14},

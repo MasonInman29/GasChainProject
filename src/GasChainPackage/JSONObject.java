@@ -150,4 +150,9 @@ public class JSONObject {
         writer.write("}");
         return writer;
     }
+
+    public boolean has(String key) {
+        return data.containsKey(key);
+    }
+
 }
