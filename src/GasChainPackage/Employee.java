@@ -50,12 +50,15 @@ public class Employee {
                         removeItem();
                         break;
                     case 5:
-                        performOrderAssessment();
+                        orderSupply();
                         break;
                     case 6:
-                        performPurchaseProcess();
+                        performOrderAssessment();
                         break;
                     case 7:
+                        performPurchaseProcess();
+                        break;
+                    case 8:
                         running = false;
                         break;
                     default:
@@ -77,7 +80,8 @@ public class Employee {
         System.out.println("2. Stock Inventory");
         System.out.println("3. Find Item");
         System.out.println("4. Remove Item");
-        System.out.println("5. Exit");
+        System.out.println("5. Order Supply");  
+        System.out.println("6. Exit");
     }
 
 
@@ -258,71 +262,83 @@ public class Employee {
 
     private void removeItem() {
         System.out.println("\n=== Remove Item ===");
-
+    
         // Get the current inventory from the station
         Map<String, Integer> currentInventory = station.getAllInventory();
-
+    
         if (currentInventory.isEmpty()) {
             System.out.println("Inventory is empty.");
             return;
         }
-
+    
+        // Create case-insensitive inventory map for lookups
+        Map<String, String> caseInsensitiveMap = new HashMap<>();
+        for (String key : currentInventory.keySet()) {
+            caseInsensitiveMap.put(key.toLowerCase(), key);
+        }
+    
         // Display current inventory
         System.out.println("\nCurrent Inventory:");
         for (Map.Entry<String, Integer> entry : currentInventory.entrySet()) {
-        System.out.println(entry.getKey() + ": " + entry.getValue() + " units");
+            System.out.println(entry.getKey() + ": " + entry.getValue() + " units");
         }
-
+    
         // Get item to remove
         System.out.println("\nEnter item name to remove:");
         String itemToRemove = scan.nextLine().trim();
-
-        if (!currentInventory.containsKey(itemToRemove)) {
+        String actualItemName = caseInsensitiveMap.get(itemToRemove.toLowerCase());
+    
+        if (actualItemName == null) {
             System.out.println("Error: Item '" + itemToRemove + "' not found in inventory");
+            // Show similar items if possible
+            System.out.println("\nAvailable items:");
+            for (String item : currentInventory.keySet()) {
+                System.out.println("- " + item);
+            }
             return;
         }
-
+    
         // Get quantity to remove
-        System.out.println("Current quantity of " + itemToRemove + ": " +
-                currentInventory.get(itemToRemove));
+        System.out.println("Current quantity of " + actualItemName + ": " +
+                currentInventory.get(actualItemName));
         System.out.println("Enter quantity to remove:");
-
+    
         try {
             int quantityToRemove = scan.nextInt();
             scan.nextLine();
-
+    
             if (quantityToRemove <= 0) {
                 System.out.println("Error: Quantity must be greater than 0");
                 return;
             }
-
-            if (quantityToRemove > currentInventory.get(itemToRemove)) {
+    
+            if (quantityToRemove > currentInventory.get(actualItemName)) {
                 System.out.println("Error: Cannot remove more items than available in inventory");
                 return;
             }
-
+    
             // Prepare lists for inventory update
             List<String> items = new ArrayList<>();
             List<Integer> quantities = new ArrayList<>();
-            items.add(itemToRemove);
+            items.add(actualItemName);  // Use the actual item name with correct case
             quantities.add(-quantityToRemove); // Negative quantity for removal
-
-             boolean updateSuccess = station.updateInventoryLevels(items, quantities);
-
-             if (updateSuccess) {
-                 System.out.println("Successfully removed " + quantityToRemove + " units of " +
-                         itemToRemove);
-                 System.out.println("Updated quantity: " +
-                         station.getAllInventory().getOrDefault(itemToRemove, 0));
-             } else {
-                 System.out.println("Error: Failed to update inventory");
-                 System.out.println("Would you like to retry? (Y/N)");
-                 String retry = scan.nextLine();
-                 if (retry.equalsIgnoreCase("Y")) {
-                     removeItem();
-                 }
-             }
-
+    
+            boolean updateSuccess = station.updateInventoryLevels(items, quantities);
+    
+            if (updateSuccess) {
+                System.out.println("Successfully removed " + quantityToRemove + " units of " +
+                        actualItemName);
+                int updatedQuantity = station.getAllInventory().getOrDefault(actualItemName, 0);
+                System.out.println("Updated quantity: " + updatedQuantity);
+            } else {
+                System.out.println("Error: Failed to update inventory");
+                System.out.println("Would you like to retry? (Y/N)");
+                String retry = scan.nextLine();
+                if (retry.equalsIgnoreCase("Y")) {
+                    removeItem();
+                }
+            }
+    
         } catch (InputMismatchException e) {
             // Extension 4a: Handle invalid input
             System.out.println("Error: Please enter a valid number");
@@ -383,6 +399,74 @@ public class Employee {
             station.recordTransaction("Fuel delivery", 1000);
         } else {
             System.out.println("Delivery verification failed.");
+        }
+    }
+
+    // In Employee.java
+private void orderSupply() {
+    System.out.println("\n=== Order Supply ===");
+    
+    // Get the current inventory
+    Map<String, Integer> currentInventory = station.getAllInventory();
+    
+        try {
+            // Show current inventory levels
+            System.out.println("\nCurrent Inventory Levels:");
+            for (Map.Entry<String, Integer> entry : currentInventory.entrySet()) {
+                String itemName = entry.getKey();
+                int quantity = entry.getValue();
+                int maxCapacity = station.getItemMaxCapacity(itemName);
+                System.out.printf("%s: %d/%d\n", itemName, quantity, maxCapacity);
+            }
+
+            // Get order details from employee
+            System.out.println("\nEnter item name to order:");
+            String itemName = scan.nextLine().trim();
+            
+            // Create case-insensitive map for lookup
+            Map<String, String> caseMap = new HashMap<>();
+            for (String key : currentInventory.keySet()) {
+                caseMap.put(key.toLowerCase(), key);
+            }
+            
+            String actualItemName = caseMap.get(itemName.toLowerCase());
+            if (actualItemName == null) {
+                throw new IllegalArgumentException("Item not found in inventory: " + itemName);
+            }
+
+            System.out.println("Enter order quantity:");
+            int orderQuantity = scan.nextInt();
+            scan.nextLine(); 
+            
+            // Use actualItemName for the rest of the method
+            int currentStock = currentInventory.get(actualItemName);
+            int maxCapacity = station.getItemMaxCapacity(actualItemName);
+            int availableSpace = maxCapacity - currentStock;
+            
+            if (orderQuantity <= 0) {
+                throw new IllegalArgumentException("Order quantity must be positive");
+            }
+            if (orderQuantity > availableSpace) {
+                throw new IllegalArgumentException("Order quantity exceeds available storage capacity");
+            }
+
+            // Process order using the correct case
+            boolean orderSuccess = station.processSupplyOrder(actualItemName, orderQuantity);
+            
+            if (orderSuccess) {
+                System.out.println("Order placed successfully!");
+                System.out.println("Ordered " + orderQuantity + " units of " + actualItemName);
+            } else {
+                System.out.println("Failed to place order. Please try again.");
+            }
+
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+        } catch (InputMismatchException e) {
+            System.out.println("Error: Please enter a valid number");
+            scan.nextLine(); 
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred: " + e.getMessage());
         }
     }
 }
