@@ -42,6 +42,20 @@ public class GasStation implements FileUtility{
         this.stationManager = new StationManager();
         this.fuelSupplier = new FuelSupplier();
     }
+    public GasStation(int stationID, String location, StationManager manager) {
+        this.stationID = stationID;
+        this.balance = 100;
+        this.location = location;
+        this.stationManager = manager;
+        this.fuelTypesOffered = new ArrayList<>();
+        this.convenienceItems = new ArrayList<>();
+        this.servicesOffered = new ArrayList<>();
+        this.storeInventory = new StoreInventory();
+        this.transactionLog = new ArrayList<>();
+        this.bank = new Bank(bankID, 0);
+        this.stationManager = new StationManager();
+        this.fuelSupplier = new FuelSupplier();
+    }
 
     public void recordTransaction(String type, double amount) {
         JSONObject transaction = new JSONObject();
@@ -151,6 +165,13 @@ public class GasStation implements FileUtility{
 
     public void setBank(Bank bank) {
         this.bank = bank;
+    }
+    public Bank getBank(){
+        return bank;
+    }
+
+    public StationManager getStationManager() {
+        return stationManager;
     }
 
     public double getbalance() {
