@@ -53,6 +53,40 @@ public class JSONArray {
         return targetItem;
     }
 
+    // Add method to remove an element at a given index
+    public boolean remove(int index) {
+        if (index < 0 || index >= list.size()) {
+            System.out.println("Error: Index out of bounds.");
+            return false;
+        }
+        try {
+            list.remove(index);
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error: Unable to remove item at index " + index + ".");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Add helper method to remove an object matching a key-value pair
+    public boolean remove(String key, Object value) {
+        for (int i = 0; i < list.size(); i++) {
+            JSONObject jsonObject = (JSONObject) list.get(i);
+            if (jsonObject.has(key) && jsonObject.get(key).equals(value)) {
+                list.remove(i);
+                return true;
+            }
+        }
+        System.out.println("Error: No matching object found to remove.");
+        return false;
+    }
+
+    // Additional methods for JSONArray (e.g., adding, retrieving elements)
+    public void put(JSONObject jsonObject) {
+        list.add(jsonObject);
+    }
+
     public int length() {
         return list.size();
     }
