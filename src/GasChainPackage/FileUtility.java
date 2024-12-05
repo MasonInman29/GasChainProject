@@ -75,8 +75,9 @@ public interface FileUtility {
                 // Remove leading and trailing spaces, and split by "}, {"
                 String[] items = jsonString.trim().split("},\\s*\\{");
 
+
                 // Add curly braces back to each part and store them in the result array
-                for (int i = 0; i < items.length; i++) {
+                for (int i = 0; i < items.length && items.length != 1; i++) {
                     if (i == 0) {
                         items[i] = items[i] + "}";
                     } else if (i == items.length - 1) {
@@ -102,4 +103,43 @@ public interface FileUtility {
         }
         return jsonArray;
     }
+    static void addItemToJSON(JSONObject newItem, String fileName) {
+        // Load existing data from the file
+        JSONArray allItems = loadJSONFromFile(fileName);
+        if (allItems == null) {
+            System.out.println("Error: Could not load JSON data from " + fileName + ".");
+            return;
+        }
+
+        // Add the new item to the JSONArray
+        allItems.put(newItem);
+
+        // Write the updated JSONArray back to the file
+        writeJSONToFile(allItems, fileName);
+    }
+
+    static void removeItemFromJSON(int itemId, String fileName) {
+        // Load existing data from the file
+        JSONArray allItems = loadJSONFromFile(fileName);
+        if (allItems == null) {
+            System.out.println("Error: Could not load JSON data from " + fileName + ".");
+            return;
+        }
+
+        // Find and remove the item with the specified ID
+        for (int i = 0; i < allItems.length(); i++) {
+            JSONObject item = allItems.getJSONObject(i);
+            if (item.getInt("id") == itemId) { // Assuming "id" is the key for itemId
+                allItems.remove(i);
+
+                // Write the updated JSONArray back to the file
+                writeJSONToFile(allItems, fileName);
+            }
+        }
+
+        // If the item wasn't found
+        System.out.println("Error: Item with ID " + itemId + " not found in " + fileName + ".");
+        return;
+    }
+
 }

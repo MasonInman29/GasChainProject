@@ -16,8 +16,42 @@ public class HiringManager extends Employee {
     }
 
     public void run() {
-        System.out.println("===Hiring Manager Menu===");
+        boolean running = true;
+        while (running) {
+            System.out.println("===Hiring Manager Menu===");
+            System.out.println("1. Hire Employees");
+            System.out.println("2. Fire Employees");
+            System.out.println("3. View Employees");
+            System.out.println("9. Back to Previous Menu");
+
+            try {
+                int userChoice = scan.nextInt();
+                scan.nextLine();
+
+                switch (userChoice) {
+                    case 1:
+                        hireEmployee();
+                        break;
+                    case 2:
+                        fireEmployee();
+                        break;
+                    case 3:
+                        //printEmployees();
+                        break;
+                    case 9:
+                        running = false;
+                        break;
+                    default:
+                        System.out.println("Error: Invalid option, ");
+                }
+            } catch (Exception e) {
+                System.out.println("Error: Invalid Input. Please enter a number.");
+                scan.nextLine();
+            }
+        }
+        return; //Return to main menu
     }
+    // Hire an employee from the candidate pool
     // Hire an employee from the candidate pool
     public void hireEmployee() {
         System.out.println("\n=== Hire Employee ===");
@@ -52,14 +86,12 @@ public class HiringManager extends Employee {
 
         // Add selected candidate to EmployeeDatabase
         JSONObject selectedCandidate = candidates.getJSONObject(choice - 1);
+
         try {
-            if (writeToFile(EMPLOYEE_DATABASE, selectedCandidate)) {
-                System.out.println("Successfully hired " + selectedCandidate.getString("name") + ".");
-            } else {
-                System.out.println("Failed to hire employee. Please try again.");
-            }
-        } catch (IOException e) {
-            System.out.println("Error writing to employee database: " + e.getMessage());
+            FileUtility.addItemToJSON(selectedCandidate, EMPLOYEE_DATABASE);
+            System.out.println("Successfully hired " + selectedCandidate.getString("name") + ".");
+        } catch (Exception e) {
+            System.out.println("Failed to hire employee: " + e.getMessage());
         }
     }
 
@@ -95,11 +127,17 @@ public class HiringManager extends Employee {
             return;
         }
 
-        // Remove selected employee
-        employees.remove(choice - 1);
-        FileUtility.writeJSONToFile(employees, EMPLOYEE_DATABASE);
-        System.out.println("Employee successfully removed.");
+        // Get the employee ID and remove them
+        int employeeId = employees.getJSONObject(choice - 1).getInt("id"); // Assuming "id" is the unique identifier
+        try {
+            FileUtility.removeItemFromJSON(employeeId, EMPLOYEE_DATABASE);
+            System.out.println("Employee successfully removed.");
+        } catch (Exception e) {
+            System.out.println("Error: Failed to remove employee: " + e.getMessage());
+        }
     }
+
+
 
     public boolean writeToFile(String fileName, JSONObject jsonObject) throws IOException {
         try (FileWriter file = new FileWriter(fileName, true)) { // Append to file
