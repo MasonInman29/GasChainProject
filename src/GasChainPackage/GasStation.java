@@ -128,7 +128,14 @@ public class GasStation implements FileUtility{
     }
 
     public Map<String, Integer> getAllInventory() {
-        return storeInventory.getStockLevels();
+        JSONArray items = FileUtility.loadJSONFromFile(FILE_PATH);
+        Map<String, Integer> inventory = new HashMap<>();
+        
+        for (int i = 0; i < items.length(); i++) {
+            JSONObject item = items.getJSONObject(i);
+            inventory.put(item.getString("name"), item.getInt("quantity"));
+        }
+        return inventory;
     }
 
     public boolean updateInventoryLevels(List<String> items, List<Integer> quantities) {
@@ -146,11 +153,19 @@ public class GasStation implements FileUtility{
 
     private void checkReorderNeeds(List<String> items, List<Integer> quantities) {
         Map<String, Integer> currentInventory = storeInventory.getStockLevels();
+        
+        // Create case-insensitive map for item lookup
+        Map<String, String> caseMap = new HashMap<>();
+        for (String key : currentInventory.keySet()) {
+            caseMap.put(key.toLowerCase(), key);
+        }
+    
         for (String item : items) {
-            if (currentInventory.containsKey(item)) {
-                int currentQuantity = currentInventory.get(item);
+            String actualItemName = caseMap.get(item.toLowerCase());
+            if (actualItemName != null) {
+                int currentQuantity = currentInventory.get(actualItemName);
                 if (currentQuantity <= storeInventory.getReorderThreshold()) {
-                    storeInventory.reorder(item);
+                    storeInventory.reorder(actualItemName);
                 }
             }
         }
@@ -207,22 +222,19 @@ public class GasStation implements FileUtility{
      *
      */
     public static void printStock() {
-        // Load the JSON file as a JSONObject
         JSONArray items = FileUtility.loadJSONFromFile(FILE_PATH);
-
-
-        // Loop through the array of items
+        
+        System.out.println("\nCurrent Inventory:");
+        System.out.printf("%-25s %-10s %-10s %-8s%n", "Item Name", "Quantity", "Capacity", "Price");
+        System.out.println("----------------------------------------------------");
+        
         for (int i = 0; i < items.length(); i++) {
             JSONObject item = items.getJSONObject(i);
-
-            // Extract item details
-            int id = item.getInt("id");
-            String name = item.getString("name");
-            int quantity = item.getInt("quantity");
-            double price = (double)item.get("price");
-
-            // Print the item details
-            System.out.println("ID: " + id + ", Name: " + name + ", Quantity: " + quantity + ", $" + price);
+            System.out.printf("%-25s %-10d %-10d $%-7.2f%n",
+                item.getString("name"),
+                item.getInt("quantity"),
+                item.getInt("maxCapacity"),
+                item.getDouble("price"));
         }
     }
 
@@ -324,5 +336,55 @@ public class GasStation implements FileUtility{
     public boolean writeToFile(String fileName, JSONObject jsonObject) throws IOException {
         // GasStation does not need this utility method
         return false;
+    }
+
+    public int getItemMaxCapacity(String itemName) {
+    JSONArray items = FileUtility.loadJSONFromFile(FILE_PATH);
+    for (int i = 0; i < items.length(); i++) {
+        JSONObject item = items.getJSONObject(i);
+        if (item.getString("name").equals(itemName)) {
+            return item.getInt("maxCapacity");
+        }
+    }
+    return 0;
+    }
+
+    public boolean processSupplyOrder(String itemName, int orderQuantity) {
+        try {
+            // Create case-insensitive map for item lookup
+            Map<String, String> caseMap = new HashMap<>();
+            Map<String, Integer> inventory = getAllInventory();
+            for (String key : inventory.keySet()) {
+                caseMap.put(key.toLowerCase(), key);
+            }
+    
+            // Get actual item name with correct case
+            String actualItemName = caseMap.get(itemName.toLowerCase());
+            if (actualItemName == null) {
+                System.out.println("Error: Item not found: " + itemName);
+                return false;
+            }
+    
+            // Create order record
+            JSONObject orderRecord = new JSONObject();
+            orderRecord.put("itemName", actualItemName);  
+            orderRecord.put("quantity", orderQuantity);
+            orderRecord.put("orderDate", System.currentTimeMillis());
+            orderRecord.put("status", "pending");
+            
+            // Write to supply orders file
+            writeToFile("supplyOrders.json", orderRecord);
+            
+            // Update inventory with pending order
+            List<String> items = new ArrayList<>();
+            List<Integer> quantities = new ArrayList<>();
+            items.add(actualItemName);  
+            quantities.add(orderQuantity);
+            
+            return updateInventoryLevels(items, quantities);
+        } catch (IOException e) {
+            System.out.println("Error processing supply order: " + e.getMessage());
+            return false;
+        }
     }
 }

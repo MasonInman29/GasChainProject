@@ -126,7 +126,7 @@ public class Main {
     }
 
     private void setEmployee() {
-        System.out.println("Hi Empolyee! What is your name?");
+        System.out.println("Hi Employee! What is your name?");
         String name = scan.nextLine();
         System.out.println("Hi " + name + "! What is your ID Number?");
         int idNum = scan.nextInt();
