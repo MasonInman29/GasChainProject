@@ -89,7 +89,7 @@ public class Main {
             System.out.println("Which Type of Manager are you?");
             System.out.println("1. Station Manager");
             System.out.println("2. Hiring Manager");
-            System.out.println("9. Exit the Manager Menu");
+            System.out.println("9. Back to Previous Menu");
 
             try {
                 int userChoice = scan.nextInt();
@@ -113,7 +113,7 @@ public class Main {
                 scan.nextLine();
             }
         }
-        run(); //Return to main menu
+        return; //Return to main menu
 
     }
     private void setCustomer(){
@@ -177,7 +177,7 @@ public class Main {
         } else {
             System.out.println("Login Failed. Exiting to Main menu.");
         }
-        run(); //Return to main menu
+        return; //Return to main menu
     }
 //        // Customer provides payment information
 //        String paymentInfo = customer.providePaymentInfo();

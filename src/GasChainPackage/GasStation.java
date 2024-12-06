@@ -53,7 +53,7 @@ public class GasStation implements FileUtility{
         this.storeInventory = new StoreInventory();
         this.transactionLog = new ArrayList<>();
         this.bank = new Bank(bankID, 0);
-        this.stationManager = new StationManager();
+        this.stationManager = manager;
         this.fuelSupplier = new FuelSupplier();
     }
 

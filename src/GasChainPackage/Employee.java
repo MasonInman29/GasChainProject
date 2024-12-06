@@ -3,13 +3,13 @@ package GasChainPackage;
 import java.util.*;
 
 public class Employee {
-    private int employeeID;
-    private String name;
-    private String role;
-    private GasStation station;
-    private Scanner scan;
-    private StationManager stationManager;
-    private Bank bank;
+    protected int employeeID;
+    protected String name;
+    protected String role;
+    protected GasStation station;
+    protected Scanner scan;
+    protected StationManager stationManager;
+    protected Bank bank;
 
     public Employee(int employeeID, String name, String role) {
         this.employeeID = employeeID;
