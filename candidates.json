@@ -1,0 +1,11 @@
+[{"id": 1, "name": "Alice Johnson", "role": "Cashier"},
+  {"id": 2, "name": "Bob Smith", "role": "Assistant Manager"},
+  {"id": 3, "name": "Charlie Brown", "role": "Technician"},
+  {"id": 4, "name": "Diana Prince", "role": "Security"},
+  {"id": 5, "name": "Eve Adams", "role": "Cashier"},
+  {"id": 6, "name": "Frank Wilson", "role": "Supervisor"},
+  {"id": 7, "name": "Grace Lee", "role": "Technician"},
+  {"id": 8, "name": "Hank Green", "role": "Manager"},
+  {"id": 9, "name": "Ivy Baker", "role": "Cashier"},
+  {"id": 10, "name": "Jack Black", "role": "Technician"}]
+

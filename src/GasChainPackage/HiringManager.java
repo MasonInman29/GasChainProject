@@ -36,7 +36,7 @@ public class HiringManager extends Employee {
                         fireEmployee();
                         break;
                     case 3:
-                        //printEmployees();
+                        printEmployees();
                         break;
                     case 9:
                         running = false;
@@ -51,7 +51,6 @@ public class HiringManager extends Employee {
         }
         return; //Return to main menu
     }
-    // Hire an employee from the candidate pool
     // Hire an employee from the candidate pool
     public void hireEmployee() {
         System.out.println("\n=== Hire Employee ===");
@@ -137,6 +136,20 @@ public class HiringManager extends Employee {
         }
     }
 
+    public void printEmployees() {
+        JSONArray employees = FileUtility.loadJSONFromFile(EMPLOYEE_DATABASE);
+
+        if (employees == null || employees.length() == 0) {
+            System.out.println("No employees in the database.");
+            return;
+        }
+
+        // Display employees
+        for (int i = 0; i < employees.length(); i++) {
+            JSONObject employee = employees.getJSONObject(i);
+            System.out.println((i + 1) + ". " + employee.getString("name") + " - Role: " + employee.getString("role"));
+        }
+    }
 
 
     public boolean writeToFile(String fileName, JSONObject jsonObject) throws IOException {
