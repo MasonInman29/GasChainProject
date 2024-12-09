@@ -168,16 +168,14 @@ public class Customer {
         int rewardsAmount = 0;
         System.out.println("Your total today is: $" + getSalesTotal(myBag));
 
-        System.out.println("Will you be using rewards today? y/n");
+        System.out.println("Do you have rewards? y/n");
         char userChoice = scan.nextLine().charAt(0);
         if(userChoice == 'y' || userChoice == 'Y') {
             System.out.println("How many points do you currently have?");
             int points = scan.nextInt();
             rewards = new Rewards(points);
             System.out.println("You have " + points + " rewards points!\nHow many points do you like to use?");
-            rewardsAmount = scan.nextInt();    /**
-             * Use Cases
-             */
+            rewardsAmount = scan.nextInt();
 
             while(rewardsAmount > points){
                 System.out.println("Insufficient ammount. Enter a number less than " + points );
@@ -190,9 +188,9 @@ public class Customer {
             char userChoiceStartRewards = scan.nextLine().charAt(0);
             if(userChoiceStartRewards == 'y' || userChoiceStartRewards == 'Y') {
                 rewards = new Rewards();
-                System.out.println("New Rewards Card! $" + rewards.getRewards());
+                System.out.println("New Rewards Card! " + rewards.getRewards() + " points!");
             }
-            rewards = new Rewards();
+//            rewards = new Rewards();
         }
         //need to edit the above section
 
