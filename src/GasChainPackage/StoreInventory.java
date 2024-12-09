@@ -1,8 +1,10 @@
 package GasChainPackage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 public class StoreInventory {
     private static final String FILE_PATH = "itemInformation.json";
@@ -117,6 +119,77 @@ public class StoreInventory {
                 }
                 break;
             }
+        }
+    }
+
+    // In StationManager.java
+public void managePromotionalCampaign() {
+    System.out.println("\n=== Manage Promotional Campaign ===");
+    Scanner scanner = new Scanner(System.in);
+
+    try {
+        // Get current inventory
+        JSONArray inventory = FileUtility.loadJSONFromFile(FILE_PATH);
+        if (inventory == null || inventory.length() == 0) {
+            System.out.println("Cannot access inventory data");
+            return;
+        }
+
+        // Display current inventory with prices
+        System.out.println("\nCurrent Items:");
+        Map<String, JSONObject> itemMap = new HashMap<>();
+        for (int i = 0; i < inventory.length(); i++) {
+            JSONObject item = inventory.getJSONObject(i);
+            itemMap.put(item.getString("name").toLowerCase(), item);
+            System.out.printf("%s - Current Price: $%.2f%n",
+                    item.getString("name"),
+                    item.getDouble("price"));
+        }
+
+        // Get item for promotion
+        System.out.println("\nEnter item name for promotion:");
+        String itemName = scanner.nextLine().trim();
+        
+        JSONObject selectedItem = itemMap.get(itemName.toLowerCase());
+        if (selectedItem == null) {
+            System.out.println("Error: Item not found in inventory");
+            return;
+        }
+
+        // Get discount percentage
+        System.out.println("Enter discount percentage (0-100):");
+        double discountPercent = scanner.nextDouble();
+        if (discountPercent <= 0 || discountPercent >= 100) {
+            System.out.println("Invalid discount percentage");
+            return;
+        }
+
+        // Calculate and update new price
+        double originalPrice = selectedItem.getDouble("price");
+        double newPrice = originalPrice * (1 - discountPercent / 100.0);
+        selectedItem.put("price", newPrice);
+
+        // Update price in main inventory
+        for (int i = 0; i < inventory.length(); i++) {
+            JSONObject item = inventory.getJSONObject(i);
+            if (item.getString("name").toLowerCase().equals(itemName.toLowerCase())) {
+                item.put("price", newPrice);
+                break;
+            }
+        }
+
+        // Save updated inventory
+        FileUtility.writeJSONToFile(inventory, FILE_PATH);
+
+        // Confirm success
+        System.out.println("\nPromotion set successfully!");
+        System.out.println("Item: " + selectedItem.getString("name"));
+        System.out.printf("Original price: $%.2f%n", originalPrice);
+        System.out.printf("New price: $%.2f%n", newPrice);
+        System.out.printf("Discount: %.0f%%%n", discountPercent);
+
+        } catch (Exception e) {
+            System.out.println("Error setting promotion: " + e.getMessage());
         }
     }
     

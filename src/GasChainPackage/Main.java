@@ -142,16 +142,57 @@ public class Main {
         System.out.println("Good Bye, " + name + "! Have a great day!");
     }
 
-    private void setStationManager () {
+    private void setStationManager() {
         System.out.println("Hi Employee! What is your name?");
         String name = scan.nextLine();
         System.out.println("Hi " + name + "! What is your ID Number?");
         int idNum = scan.nextInt();
+        scan.nextLine(); // Clear buffer
+        
         if (!(idNum > 0) && name.length() < 1) {
-            System.out.println("Invalid infomation, please try again.");
+            System.out.println("Invalid information, please try again.");
+            return;
         }
-
+    
         stationManager = new StationManager();
+        boolean running = true;
+    
+        while (running) {
+            System.out.println("\n=== Station Manager Menu ===");
+            System.out.println("1. Manage Promotional Campaign");
+            System.out.println("2. View Inventory");
+            System.out.println("3. View Order History");
+            System.out.println("4. View Transaction Log");
+            System.out.println("9. Exit");
+    
+            try {
+                int choice = scan.nextInt();
+                scan.nextLine(); // Clear buffer
+    
+                switch (choice) {
+                    case 1:
+                        stationManager.managePromotionalCampaign();
+                        break;
+                    case 2:
+                        stationManager.printInventory();
+                        break;
+                    case 3:
+                        stationManager.printOrderHistory();
+                        break;
+                    case 4:
+                        stationManager.printTransactionLog();
+                        break;
+                    case 9:
+                        running = false;
+                        break;
+                    default:
+                        System.out.println("Invalid option");
+                }
+            } catch (Exception e) {
+                System.out.println("Error: Invalid input");
+                scan.nextLine(); // Clear buffer
+            }
+        }
     }
 
     private void setHiringManager() {
