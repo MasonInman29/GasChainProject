@@ -225,12 +225,13 @@ public class GasStation implements FileUtility{
         JSONArray items = FileUtility.loadJSONFromFile(FILE_PATH);
         
         System.out.println("\nCurrent Inventory:");
-        System.out.printf("%-25s %-10s %-10s %-8s%n", "Item Name", "Quantity", "Capacity", "Price");
+        System.out.printf("%-25s %-10s %-10s %-8s%n", "ID", "Item Name", "Quantity", "Capacity", "Price");
         System.out.println("----------------------------------------------------");
         
         for (int i = 0; i < items.length(); i++) {
             JSONObject item = items.getJSONObject(i);
             System.out.printf("%-25s %-10d %-10d $%-7.2f%n",
+//                item.getInt("id"),
                 item.getString("name"),
                 item.getInt("quantity"),
                 item.getInt("maxCapacity"),
@@ -266,30 +267,27 @@ public class GasStation implements FileUtility{
     }
 
     public static void printBag(Map<Integer, Integer> myBag) {
-        JSONArray itemInfo = FileUtility.loadJSONFromFile(FILE_PATH); // Assume this method loads the JSON data correctly
-        JSONObject itemsObject = itemInfo.getJSONObject("items");
+        JSONArray items = FileUtility.loadJSONFromFile(FILE_PATH);
         int rewards = 0;
 
         for (Object keyStr : myBag.keySet()){
-            // Convert key to an integer
             int key = Integer.valueOf(String.valueOf(keyStr));
-            System.out.println(key);
-
             if(key == 0){
-                rewards = myBag.get(key);
+                rewards = myBag.get(0);
                 continue;
             }
 
-//            JSONObject item = itemsObject.getJSONObject(String.valueOf(keyStr));
-//            int id = item.getInt("id");
-//            String name = item.getString("name");
-//            int quantity = item.getInt("quantity");
-//            double price = (double)item.get("price");
+            JSONObject item = items.getJSONObject(key);
+            System.out.printf("%-25s %-10d %-10d $%-7.2f%n",
+                    item.getString("name"),
+                    item.getInt("quantity"),
+                    item.getInt("maxCapacity"),
+                    item.getDouble("price"));
 
             // Print the item details
 //            System.out.println(", Name: " + name + ", Quantity: " + quantity + ", $" + price);
         }
-        System.out.println("REWARDS USED: $" + rewards);
+        System.out.println("REWARDS USED: " + rewards + " points!");
     }
 
     /**
@@ -303,20 +301,21 @@ public class GasStation implements FileUtility{
         double total = getSalesTotal(items); // Get the total cost from the map of items
 
         if (total > paymentAmount) { // Check if payment is insufficient
-            System.out.println("Error: Insufficient payment. Total: " + total + ", Paid: " + paymentAmount);
+            System.out.println("Error: Insufficient payment. Total: $" + total + ", Paid: $" + paymentAmount);
             for (Map.Entry<Integer, Integer> entry : items.entrySet()) {
                 stockItem(String.valueOf( entry.getKey()),  entry.getValue());
             }
             return false;
         }
 
-        System.out.println("Sale completed successfully. Total: " + total + ", Paid: " + paymentAmount);
+        System.out.println("Sale completed successfully. \nTotal: $" + total + ", \nPaid: $" + paymentAmount + "\nChange: $" + (paymentAmount - total));
+        r.addRewards(total);
+        System.out.println("Rewards After Purchase: " + r.getRewards() + " points!");
         System.out.println("Sales Items: " );
         printBag(items);
+
         depositToBank(total);
-        r.addPoints(total);
-        System.out.println("\nChange Back: $" + (paymentAmount - total));
-        System.out.println("Rewards After Purchase: " + r.getRewards() + " points!");
+//        System.out.println("\nChange Back: $" + (paymentAmount - total));
         return true;
     }
 
