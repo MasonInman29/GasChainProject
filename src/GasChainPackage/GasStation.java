@@ -224,13 +224,23 @@ public class GasStation implements FileUtility{
     public static void printStock() {
         JSONArray items = FileUtility.loadJSONFromFile(FILE_PATH);
         
-        System.out.println("\nCurrent Inventory:");
-        System.out.printf("%-25s %-10s %-10s %-8s%n", "Item Name", "Quantity", "Capacity", "Price");
-        System.out.println("----------------------------------------------------");
-        
+        // Convert JSONArray to List for sorting
+        List<JSONObject> sortedItems = new ArrayList<>();
         for (int i = 0; i < items.length(); i++) {
-            JSONObject item = items.getJSONObject(i);
-            System.out.printf("%-25s %-10d %-10d $%-7.2f%n",
+            sortedItems.add(items.getJSONObject(i));
+        }
+        
+        // Sort by ID
+        Collections.sort(sortedItems, (a, b) -> 
+            Integer.compare(a.getInt("id"), b.getInt("id")));
+        
+        System.out.println("\nCurrent Inventory:");
+        System.out.printf("%-3s %-25s %-10s %-10s %-8s%n", "ID", "Item Name", "Quantity", "Capacity", "Price");
+        System.out.println("--------------------------------------------------------");
+        
+        for (JSONObject item : sortedItems) {
+            System.out.printf("%-3d %-25s %-10d %-10d $%-7.2f%n",
+                item.getInt("id"),
                 item.getString("name"),
                 item.getInt("quantity"),
                 item.getInt("maxCapacity"),
