@@ -279,25 +279,58 @@ public class GasStation implements FileUtility{
         JSONArray items = FileUtility.loadJSONFromFile(FILE_PATH);
         int rewards = 0;
 
-        for (Object keyStr : myBag.keySet()){
+        System.out.printf("%-25s %-10s %-10s %-8s%n", "Item Name", "Quantity", "Price", "Subtotal");
+        System.out.println("--------------------------------------------------------");
+
+        for (Object keyStr : myBag.keySet()) {
             int key = Integer.valueOf(String.valueOf(keyStr));
-            if(key == 0){
+            if(key == 0) {
                 rewards = myBag.get(0);
                 continue;
             }
 
-            JSONObject item = items.getJSONObject(key);
-            System.out.printf("%-25s %-10d %-10d $%-7.2f%n",
-                    item.getString("name"),
-                    item.getInt("quantity"),
-                    item.getInt("maxCapacity"),
-                    item.getDouble("price"));
+            JSONObject item = null;
+            for (int i = 0; i < items.length(); i++) {
+                JSONObject currentItem = items.getJSONObject(i);
+                if (currentItem.getInt("id") == key) {
+                    item = currentItem;
+                    break;
+                }
+            }
 
-            // Print the item details
-//            System.out.println(", Name: " + name + ", Quantity: " + quantity + ", $" + price);
+            if (item != null) {
+                System.out.printf("%-25s %-10d %-10d $%-7.2f%n",
+                        item.getString("name"),
+                        myBag.get(key),  // quantity from bag
+                        item.getInt("quantity"),  // current inventory
+                        item.getDouble("price"));
+            }
         }
         System.out.println("REWARDS USED: " + rewards + " points!");
     }
+//    public static void printBag(Map<Integer, Integer> myBag) {
+//        JSONArray items = FileUtility.loadJSONFromFile(FILE_PATH);
+//        int rewards = 0;
+//
+//        for (Object keyStr : myBag.keySet()){
+//            int key = Integer.valueOf(String.valueOf(keyStr));
+//            if(key == 0){
+//                rewards = myBag.get(0);
+//                continue;
+//            }
+//
+//            JSONObject item = items.getJSONObject(key);
+//            System.out.printf("%-25s %-10d %-10d $%-7.2f%n",
+//                    item.getString("name"),
+//                    item.getInt("quantity"),
+//                    item.getInt("maxCapacity"),
+//                    item.getDouble("price"));
+//
+//            // Print the item details
+////            System.out.println(", Name: " + name + ", Quantity: " + quantity + ", $" + price);
+//        }
+//        System.out.println("REWARDS USED: " + rewards + " points!");
+//    }
 
     /**
      * USE CASE: Employee sell Items

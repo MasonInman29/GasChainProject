@@ -59,7 +59,7 @@ public class Main {
                     case 3:
                         managerMenu();
                         break;
-                    case 9:
+                    case 4:
                         running = false;
                         break;
                     default:
@@ -79,7 +79,7 @@ public class Main {
         System.out.println("1. Customer");
         System.out.println("2. Employee");
         System.out.println("3. Manager");
-        System.out.println("9. Exit");
+        System.out.println("4. Exit");
     }
 
     private void managerMenu() {
