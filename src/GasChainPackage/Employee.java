@@ -2,7 +2,7 @@ package GasChainPackage;
 
 import java.util.*;
 
-public class Employee {
+public class Employee implements AlarmUser {
     protected int employeeID;
     protected String name;
     protected String role;
@@ -11,11 +11,17 @@ public class Employee {
     protected StationManager stationManager;
     protected Bank bank;
 
+    private SecuritySystem securitySystem;
+    private JSONArray monitoringLogs;
+
     public Employee(int employeeID, String name, String role) {
         this.employeeID = employeeID;
         this.name = name;
         this.role = role;
         scan = new Scanner(System.in);
+
+        securitySystem = new SecuritySystem();
+        monitoringLogs = new JSONArray();
     }
 
     public void setStation(GasStation station) {
@@ -59,6 +65,15 @@ public class Employee {
                         performPurchaseProcess();
                         break;
                     case 8:
+                        monitorCameras();
+                        break;
+                    case 9:
+                        viewLogs();
+                        break;
+                    case 10:
+                        SecuritySystemRunner.run(this);
+                        break;
+                    case 11:
                         running = false;
                         break;
                     default:
@@ -80,8 +95,11 @@ public class Employee {
         System.out.println("2. Stock Inventory");
         System.out.println("3. Find Item");
         System.out.println("4. Remove Item");
-        System.out.println("5. Order Supply");  
-        System.out.println("6. Exit");
+        System.out.println("5. Order Supply");
+        System.out.println("8. Monitor Security Cameras");
+        System.out.println("9. View Security Monitoring Logs");
+        System.out.println("10. Security Alarm System");
+        System.out.println("11. Exit");
     }
 
 
@@ -468,5 +486,63 @@ private void orderSupply() {
         } catch (Exception e) {
             System.out.println("An unexpected error occurred: " + e.getMessage());
         }
+    }
+
+    public void monitorCameras() {
+        System.out.println("\n--- Monitoring Security Cameras ---");
+        List<SecurityCamera> cameras = securitySystem.getCameras();
+
+        if (cameras == null) {
+            System.out.println("Error: No cameras available in the security system.");
+            return;
+        }
+
+        try {
+            for (SecurityCamera camera : cameras) {
+                if (camera == null) {
+                    System.out.println("Warning: Found a null camera in the list.");
+                    continue;
+                }
+
+                camera.displayFeed();
+
+                // Log the detailed monitoring event
+                JSONObject logEntry = new JSONObject();
+                logEntry.put("event", "Monitor Camera");
+                logEntry.put("cameraId", camera.getCameraId());
+                logEntry.put("location", camera.getLocation());
+                logEntry.put("status", camera.isActive() ? "Active" : "Inactive");
+                logEntry.put("timestamp", System.currentTimeMillis());
+
+                monitoringLogs.put(logEntry);
+            }
+
+            System.out.println("Monitoring events logged successfully.");
+        } catch (Exception e) {
+            System.out.println("Error: An unexpected error occurred while monitoring cameras.");
+            e.printStackTrace();
+        }
+    }
+
+    public void viewLogs() {
+        System.out.println("\n--- Monitoring Logs ---");
+        if (monitoringLogs.length() == 0) {
+            System.out.println("No logs available.");
+        } else {
+            for (int i = 0; i < monitoringLogs.length(); i++) {
+                System.out.println(monitoringLogs.get(i).toString());
+            }
+        }
+    }
+
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String getRole() {
+        return "Employee";
     }
 }

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-public class StationManager implements OrderProcessable, InventoryManageable, DeliveryReceivable, PaymentProcessable {
+public class StationManager implements OrderProcessable, InventoryManageable, DeliveryReceivable, PaymentProcessable{
 
     // Fields to store fuel inventory, order history, and transaction log
     private Map<String, Double> inventory;
@@ -273,4 +273,6 @@ public class StationManager implements OrderProcessable, InventoryManageable, De
             return false;
         }
     }
+
+
 }

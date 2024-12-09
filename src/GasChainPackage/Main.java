@@ -18,6 +18,7 @@ public class Main {
     private StationManager stationManager;
     private FuelSupplier fuelSupplier;
 
+
     public Main() {
         bank = new Bank(1, 0.0);
         transactionHandler = new TransactionHandler();
@@ -163,6 +164,7 @@ public class Main {
             System.out.println("2. View Inventory");
             System.out.println("3. View Order History");
             System.out.println("4. View Transaction Log");
+            System.out.println("5. View Security Monitoring Logs");
             System.out.println("9. Exit");
     
             try {
@@ -182,6 +184,9 @@ public class Main {
                     case 4:
                         stationManager.printTransactionLog();
                         break;
+                    case 5:
+                       employee.viewLogs();
+                       break;
                     case 9:
                         running = false;
                         break;
@@ -237,5 +242,6 @@ public class Main {
 //            System.out.println("Thank you for your purchase!");
 //        } else {
 //            System.out.println("Transaction failed. Please try again.")
+
 }
 
