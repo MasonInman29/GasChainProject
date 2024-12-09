@@ -1,7 +1,10 @@
 package GasChainPackage;
 
-import java.util.List;
-import java.util.Scanner;
+
+import java.util.*;
+
+import static GasChainPackage.GasStation.*;
+import static java.lang.Integer.parseInt;
 
 public class Main {
     private Bank bank;
@@ -9,19 +12,24 @@ public class Main {
     private GasStation station;
     private FuelPump fuelPump;
     private Employee employee;
+//    private Customer customer;
     private Scanner scan;
-    private SecuritySystem securitySystem;
-    private JSONArray monitoringLogs;
+    private Employee stationMannagerEMP;
+    private StationManager stationManager;
+    private FuelSupplier fuelSupplier;
 
     public Main() {
         bank = new Bank(1, 0.0);
         transactionHandler = new TransactionHandler();
-        employee = new Employee(1, "John Doe", "Employee");
-        station = new GasStation(1, "456 Station St", employee);
+        stationMannagerEMP = new Employee(1, "Jane Smith", "Manager");
+        station = new GasStation(1, "456 Station St", stationMannagerEMP);
+        stationManager = new StationManager();
+        fuelSupplier = new FuelSupplier();
+//        employee.setStation(station);
+        station.setBank(bank);
         fuelPump = new FuelPump(transactionHandler, bank, true);
+//        customer = new Customer("John Doe");
         scan = new Scanner(System.in);
-        securitySystem = new SecuritySystem();
-        monitoringLogs = new JSONArray();
     }
 
     public static void main(String[] args) {
@@ -34,7 +42,7 @@ public class Main {
         boolean running = true;
 
         while (running) {
-            System.out.println("\nWhat is your title?");
+            System.out.println("\nWhat is your title?");  //What are you here to do?
             printMenu();
 
             try {
@@ -46,12 +54,12 @@ public class Main {
                         setCustomer();
                         break;
                     case 2:
-                        employeeMenu();
+                        setEmployee();
                         break;
                     case 3:
                         managerMenu();
                         break;
-                    case 9:
+                    case 4:
                         running = false;
                         break;
                     default:
@@ -64,141 +72,154 @@ public class Main {
         }
     }
 
+    /**
+     * Helper Functions
+     */
     private void printMenu() {
         System.out.println("1. Customer");
         System.out.println("2. Employee");
         System.out.println("3. Manager");
-        System.out.println("9. Exit");
+        System.out.println("4. Exit");
     }
 
-    private void employeeMenu() {
+    private void managerMenu() {
+        boolean running = true;
+        while (running) {
+            System.out.println("===Manager Selection Menu===");
+            System.out.println("Which Type of Manager are you?");
+            System.out.println("1. Station Manager");
+            System.out.println("2. Hiring Manager");
+            System.out.println("9. Back to Previous Menu");
+
+            try {
+                int userChoice = scan.nextInt();
+                scan.nextLine();
+
+                switch (userChoice) {
+                    case 1:
+                        setStationManager();
+                        break;
+                    case 2:
+                        setHiringManager();
+                        break;
+                    case 9:
+                        running = false;
+                        break;
+                    default:
+                        System.out.println("Error: Invalid option, ");
+                }
+            } catch (Exception e) {
+                System.out.println("Error: Invalid Input. Please enter a number.");
+                scan.nextLine();
+            }
+        }
+        return; //Return to main menu
+
+    }
+    private void setCustomer(){
+        System.out.println("Hi Customer! What is your name?");
+        String name = scan.nextLine();
+//        scan.nextLine();
+        System.out.println("NAME: " + name);
+        Customer newCustomer = new Customer(name, station);
+        System.out.println("Good Bye, " + name + "! Have a great day!");
+    }
+
+    private void setEmployee() {
         System.out.println("Hi Employee! What is your name?");
         String name = scan.nextLine();
         System.out.println("Hi " + name + "! What is your ID Number?");
         int idNum = scan.nextInt();
-        scan.nextLine();
-
-        if (idNum <= 0 || name.isEmpty()) {
+        if (!(idNum > 0) && name.length() < 1) {
             System.out.println("Invalid information, please try again.");
-            return;
         }
 
         employee = new Employee(idNum, name, "Employee");
+        station = new GasStation(1, "456 Station St", employee);
         employee.setStation(this.station);
+        employee.run();
 
-        boolean running = true;
-        while (running) {
-            System.out.println("\n=== Employee Menu ===");
-            System.out.println("1. Monitor Security Cameras");
-            System.out.println("2. View  Monitoring Logs");
-            System.out.println("9. Exit to Main Menu");
-
-            int choice = scan.nextInt();
-            scan.nextLine();
-
-            switch (choice) {
-                case 1:
-                    monitorSecurityCameras();
-                    break;
-                case 2:
-                    viewLogs();
-                case 9:
-                    running = false;
-                    break;
-                default:
-                    System.out.println("Error: Invalid option.");
-            }
-        }
-    }
-
-    private void managerMenu() {
-        System.out.println("Hi Manager! What is your name?");
-        String name = scan.nextLine();
-        System.out.println("Hi " + name + "! What is your ID Number?");
-        int idNum = scan.nextInt();
-        scan.nextLine();
-
-        if (idNum <= 0 || name.isEmpty()) {
-            System.out.println("Invalid information, please try again.");
-            return;
-        }
-
-        boolean running = true;
-        while (running) {
-            System.out.println("\n=== Manager Menu ===");
-            System.out.println("1. Monitor Security Cameras");
-            System.out.println("2. Station Manager Options");
-            System.out.println("3. View Monitoring Logs");
-            System.out.println("9. Exit to Main Menu");
-
-            int choice = scan.nextInt();
-            scan.nextLine();
-
-            switch (choice) {
-                case 1:
-                    monitorSecurityCameras();
-                    break;
-                case 2:
-                    setStationManager();
-                    break;
-                case 3:
-                    viewLogs();
-                case 9:
-                    running = false;
-                    break;
-                default:
-                    System.out.println("Error: Invalid option.");
-            }
-        }
-    }
-
-    private void monitorSecurityCameras() {
-        System.out.println("\n--- Monitoring Security Cameras ---");
-        List<SecurityCamera> cameras = securitySystem.getCameras();
-
-        try {
-            for (SecurityCamera camera : cameras) {
-                camera.displayFeed();
-
-                // Log the detailed monitoring event
-                JSONObject logEntry = new JSONObject();
-                logEntry.put("event", "Monitor Camera");
-                logEntry.put("cameraId", camera.getCameraId());
-                logEntry.put("location", camera.getLocation());
-                logEntry.put("status", camera.isActive() ? "Active" : "Inactive");
-                logEntry.put("timestamp", System.currentTimeMillis());
-
-                monitoringLogs.put(logEntry);
-            }
-
-            System.out.println("Monitoring events logged successfully.");
-        } catch (Exception e) {
-            System.out.println("Error: An unexpected error occurred while monitoring cameras.");
-            e.printStackTrace();
-        }
-    }
-
-        private void viewLogs() {
-            System.out.println("\n--- Monitoring Logs ---");
-            if (monitoringLogs.length() == 0) {
-                System.out.println("No logs available.");
-            } else {
-                for (int i = 0; i < monitoringLogs.length(); i++) {
-                    System.out.println(monitoringLogs.get(i).toString());
-                }
-            }
-        }
-
-    private void setCustomer() {
-        System.out.println("Hi Customer! What is your name?");
-        String name = scan.nextLine();
         System.out.println("Good Bye, " + name + "! Have a great day!");
     }
 
     private void setStationManager() {
-        System.out.println("Station Manager functionality is not yet implemented.");
+        System.out.println("Hi Employee! What is your name?");
+        String name = scan.nextLine();
+        System.out.println("Hi " + name + "! What is your ID Number?");
+        int idNum = scan.nextInt();
+        scan.nextLine(); // Clear buffer
+        
+        if (!(idNum > 0) && name.length() < 1) {
+            System.out.println("Invalid information, please try again.");
+            return;
+        }
+    
+        stationManager = new StationManager();
+        boolean running = true;
+    
+        while (running) {
+            System.out.println("\n=== Station Manager Menu ===");
+            System.out.println("1. Manage Promotional Campaign");
+            System.out.println("2. View Inventory");
+            System.out.println("3. View Order History");
+            System.out.println("4. View Transaction Log");
+            System.out.println("9. Exit");
+    
+            try {
+                int choice = scan.nextInt();
+                scan.nextLine(); // Clear buffer
+    
+                switch (choice) {
+                    case 1:
+                        stationManager.managePromotionalCampaign();
+                        break;
+                    case 2:
+                        stationManager.printInventory();
+                        break;
+                    case 3:
+                        stationManager.printOrderHistory();
+                        break;
+                    case 4:
+                        stationManager.printTransactionLog();
+                        break;
+                    case 9:
+                        running = false;
+                        break;
+                    default:
+                        System.out.println("Invalid option");
+                }
+            } catch (Exception e) {
+                System.out.println("Error: Invalid input");
+                scan.nextLine(); // Clear buffer
+            }
+        }
     }
 
+    private void setHiringManager() {
+        final String EXAMPLE_USER_CREDENTIALS = "test";
+        final String EXAMPLE_USER_PASSWORD = "test";
+        final String HIRING_MANAGER_DEAFALT_NAME = "Hiring Manager";
+        final int HIRING_MANAGER_ID = 999888777;
+
+        System.out.println("===Hiring Manager Login===");
+        System.out.println("Please enter Username: ");
+        String username = scan.nextLine();
+        System.out.println("Please enter Password: ");
+        String password = scan.nextLine();
+
+        if (username.equals(EXAMPLE_USER_CREDENTIALS) &&
+            password.equals(EXAMPLE_USER_PASSWORD)) {
+            System.out.println("Login Successful.");
+            HiringManager hiringManager = new HiringManager(HIRING_MANAGER_ID, HIRING_MANAGER_DEAFALT_NAME, "Hiring Manager");
+            station = new GasStation(1, "456 Station St", employee);
+            hiringManager.setStation(this.station);
+            hiringManager.run();
+            System.out.println("Exiting to Main Menu.");
+        } else {
+            System.out.println("Login Failed. Exiting to Main menu.");
+        }
+        return; //Return to main menu
+    }
 //        // Customer provides payment information
 //        String paymentInfo = customer.providePaymentInfo();
 //

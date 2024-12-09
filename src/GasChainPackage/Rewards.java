@@ -6,16 +6,9 @@ public class Rewards {
     public Rewards() {
         points = 0;
     }
+
     public Rewards(int p) {
         points = p;
-    }
-
-    /**
-     * every $10 = 1 point
-     * @param price sales total (after rewards applied)
-     */
-    public void addPoints(double price){
-        points += price % 10;
     }
 
     /**
@@ -47,4 +40,20 @@ public class Rewards {
         points -= rewardsToUse;
         return (rewardsToUse);
     }
+
+    /**
+     * every $10 = 1 point
+     * @param salesTotal sales total (after rewards applied)
+     */
+    public void addRewards(double salesTotal){
+        if(salesTotal < 10){
+            return;
+        }
+        else{
+            System.out.println("pre pts: " + points);
+            points += (int)Math.floor(salesTotal / 10);
+            System.out.println("post pts: " + points + " sale total " + salesTotal + "\n");
+        }
+    }
+
 }
