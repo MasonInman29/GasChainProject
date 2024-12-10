@@ -185,13 +185,6 @@ public class StationManager implements OrderProcessable, InventoryManageable, De
                 return;
             }
 
-            System.out.println("Enter promotion duration in days:");
-            int duration = scanner.nextInt();
-            if (duration <= 0) {
-                System.out.println("Duration must be positive");
-                return;
-            }
-
             System.out.println("Enter quantity limit (0 for no limit):");
             int quantityLimit = scanner.nextInt();
             if (quantityLimit < 0) {
@@ -201,14 +194,13 @@ public class StationManager implements OrderProcessable, InventoryManageable, De
 
             // Create promotion record
             JSONObject promotion = createPromotionRecord(
-                selectedItem, discountPercent, duration, quantityLimit);
+                selectedItem, discountPercent, quantityLimit);
 
             // Save promotion and update prices
             if (savePromotionAndUpdatePrices(promotion, selectedItem)) {
                 System.out.println("\nPromotion created successfully!");
                 System.out.println("Item: " + selectedItem.getString("name"));
                 System.out.println("Discount: " + discountPercent + "%");
-                System.out.println("Duration: " + duration + " days");
                 if (quantityLimit > 0) {
                     System.out.println("Quantity limit: " + quantityLimit);
                 }
@@ -226,13 +218,11 @@ public class StationManager implements OrderProcessable, InventoryManageable, De
     }
 
     private JSONObject createPromotionRecord(JSONObject item, double discountPercent, 
-                                        int duration, int quantityLimit) {
+                                     int quantityLimit) {
         JSONObject promotion = new JSONObject();
         promotion.put("itemName", item.getString("name"));
         promotion.put("originalPrice", item.getDouble("price"));
         promotion.put("discountPercent", discountPercent);
-        promotion.put("startDate", System.currentTimeMillis());
-        promotion.put("endDate", System.currentTimeMillis() + (duration * 24 * 60 * 60 * 1000L));
         promotion.put("quantityLimit", quantityLimit);
         promotion.put("status", "active");
         return promotion;
